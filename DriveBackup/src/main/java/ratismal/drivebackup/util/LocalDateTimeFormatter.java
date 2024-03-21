@@ -26,15 +26,35 @@ public final class LocalDateTimeFormatter {
         if (!VALID_FORMAT.matcher(pattern).find()) {
             throw new IllegalArgumentException("Format pattern contains illegal characters");
         }
-        if (pattern.contains(FORMAT_KEYWORD)) { // assumes %FORMAT not mixed with custom pattern
-            int frontOffset = pattern.startsWith(FORMAT_KEYWORD) ? 2 : 0;
-            int backOffset = pattern.endsWith(FORMAT_KEYWORD) ? 2 : 0;
-            pattern = "'" + pattern.replace(FORMAT_KEYWORD, FORMAT_REPLACEMENT) + "'";
-            pattern = pattern.substring(frontOffset, pattern.length() - backOffset);
+        return new LocalDateTimeFormatter(DateTimeFormatter.ofPattern(replaceAndEscape(pattern)));
+    }
+
+    /**
+     * assumes %FORMAT not mixed with custom pattern
+     */
+    private static String replaceAndEscape(String base) {
+        StringBuilder builder = new StringBuilder(base.length() + FORMAT_REPLACEMENT.length());
+        int startOffset = 0;
+        if (base.startsWith(FORMAT_KEYWORD)) {
+            builder.append(FORMAT_REPLACEMENT,1, FORMAT_REPLACEMENT.length());
+            startOffset = FORMAT_KEYWORD.length();
         } else {
-            pattern = "'" + pattern + "'";
+            builder.append('\'');
         }
-        return new LocalDateTimeFormatter(DateTimeFormatter.ofPattern(pattern));
+        for (int i = startOffset; i < base.length(); i++) {
+            if (base.charAt(i) == '%' && base.regionMatches(i, FORMAT_KEYWORD, 0, FORMAT_KEYWORD.length())) {
+                builder.append(FORMAT_REPLACEMENT);
+                i += FORMAT_KEYWORD.length() - 1;
+            } else {
+                builder.append(base.charAt(i));
+            }
+        }
+        if (base.endsWith(FORMAT_KEYWORD)){
+            builder.deleteCharAt(builder.length() - 1);
+        } else {
+            builder.append('\'');
+        }
+        return builder.toString();
     }
 
     public String format(@NotNull ZonedDateTime timeDate) {
