@@ -25,16 +25,21 @@ public class CommandHandler implements CommandExecutor {
 
     /**
      * Handles commands sent by players
-     * @param sender the player who sent command
-     * @param command  the command that was sent
-     * @param label the command alias that was used
-     * @param args any arguments that followed the command
+     *
+     * @param sender
+     *            the player who sent command
+     * @param command
+     *            the command that was sent
+     * @param label
+     *            the command alias that was used
+     * @param args
+     *            any arguments that followed the command
      * @return whether the command was handled
      */
     public boolean onCommand(CommandSender sender, @NotNull Command command, String label, String[] args) {
         if (!command.getName().equalsIgnoreCase(CHAT_KEYWORD)) {
             return false;
-        } 
+        }
         if (args.length == 0) {
             BasicCommands.sendHelp(sender);
             return true;
@@ -57,16 +62,20 @@ public class CommandHandler implements CommandExecutor {
                 DriveBackup.reloadLocalConfig();
                 MessageUtil.Builder().mmText(intl("config-reloaded")).to(sender).send();
                 break;
-            /*case "debug":
-                if (!PermissionHandler.hasPerm(sender, PermissionHandler.RELOAD_CONFIG)) break;
-                MessageUtil.Builder().mmText(intl("debug-log-creating")).to(sender).toConsole(false).send();
-                DebugCollector debugInfo = new DebugCollector(DriveBackup.getInstance());
-                String publishedUrl = debugInfo.publish(DriveBackup.getInstance());
-                MessageUtil.Builder()
-                    .mmText(intl("debug-log-created"), "url", publishedUrl)
-                    .to(sender).toConsole(false)
-                    .send();
-                break;*/
+            /*
+             * case "debug":
+             * if (!PermissionHandler.hasPerm(sender, PermissionHandler.RELOAD_CONFIG))
+             * break;
+             * MessageUtil.Builder().mmText(intl("debug-log-creating")).to(sender).toConsole
+             * (false).send();
+             * DebugCollector debugInfo = new DebugCollector(DriveBackup.getInstance());
+             * String publishedUrl = debugInfo.publish(DriveBackup.getInstance());
+             * MessageUtil.Builder()
+             * .mmText(intl("debug-log-created"), "url", publishedUrl)
+             * .to(sender).toConsole(false)
+             * .send();
+             * break;
+             */
             case "linkaccount":
             case "link":
                 if (args.length < 2) {
@@ -89,7 +98,7 @@ public class CommandHandler implements CommandExecutor {
                     default:
                         BasicCommands.sendHelp(sender);
                         break;
-                    }
+                }
                 break;
             case "unlinkaccount":
             case "unlink":

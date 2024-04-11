@@ -23,10 +23,12 @@ public class PlayerListener implements Listener {
         }
         Player player = event.getPlayer();
         if (UpdateChecker.isUpdateAvailable() && PermissionHandler.hasPerm(player, Permission.LINK_ACCOUNTS)) {
-            MessageUtil.Builder().mmText(Localization.intl("player-join-update-available")).to(player).toConsole(false).send();
+            MessageUtil.Builder().mmText(Localization.intl("player-join-update-available")).to(player).toConsole(false)
+                    .send();
         }
         if (!UploadThread.wasLastBackupSuccessful() && PermissionHandler.hasPerm(player, Permission.BACKUP)) {
-            MessageUtil.Builder().mmText(Localization.intl("player-join-backup-failed")).to(player).toConsole(false).send();
+            MessageUtil.Builder().mmText(Localization.intl("player-join-backup-failed")).to(player).toConsole(false)
+                    .send();
         }
     }
 

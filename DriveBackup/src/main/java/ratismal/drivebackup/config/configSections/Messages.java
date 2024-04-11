@@ -11,11 +11,10 @@ public class Messages {
     public final String defaultColor;
 
     public Messages(
-        boolean sendInChat,
-        String prefix, 
-        String defaultColor
-        ) {
-        
+            boolean sendInChat,
+            String prefix,
+            String defaultColor) {
+
         this.sendInChat = sendInChat;
         this.prefix = prefix;
         this.defaultColor = defaultColor;
@@ -27,9 +26,8 @@ public class Messages {
         String prefix = config.getString("messages.prefix");
         String defaultColor = config.getString("messages.default-color");
         return new Messages(
-            sendInChat,
-            prefix,
-            defaultColor
-        );
+                sendInChat,
+                prefix,
+                defaultColor);
     }
 }

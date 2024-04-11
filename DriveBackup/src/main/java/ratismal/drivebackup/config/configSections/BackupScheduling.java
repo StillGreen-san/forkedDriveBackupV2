@@ -33,16 +33,15 @@ public class BackupScheduling {
     public final BackupScheduleEntry[] schedule;
 
     public BackupScheduling(
-        boolean enabled, 
-        BackupScheduleEntry[] schedule
-        ) {
+            boolean enabled,
+            BackupScheduleEntry[] schedule) {
 
         this.enabled = enabled;
         this.schedule = schedule;
     }
 
     @NotNull
-    @Contract ("_, _ -> new")
+    @Contract("_, _ -> new")
     public static BackupScheduling parse(@NotNull FileConfiguration config, Logger logger) {
         boolean enabled = config.getBoolean("scheduled-backups");
         List<Map<?, ?>> rawSchedule = config.getMapList("backup-schedule-list");
@@ -92,17 +91,15 @@ public class BackupScheduling {
                 continue;
             }
             schedule.add(new BackupScheduling.BackupScheduleEntry(
-                days.toArray(new DayOfWeek[0]),
-                time
-                ));
+                    days.toArray(new DayOfWeek[0]),
+                    time));
         }
         if (rawSchedule.isEmpty() && enabled) {
             logger.log(intl("backup-schedule-empty"));
             enabled = false;
         }
         return new BackupScheduling(
-            enabled, 
-            schedule.toArray(new BackupScheduleEntry[0])
-            );
+                enabled,
+                schedule.toArray(new BackupScheduleEntry[0]));
     }
 }

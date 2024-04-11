@@ -39,7 +39,8 @@ public class DebugCollector {
         this.plugins = new ArrayList<>();
         this.ramInfo = new RamInfo();
         for (Plugin pinfo : plugin.getServer().getPluginManager().getPlugins()) {
-            this.plugins.add(new PluginInfo(pinfo.getDescription().getName(), pinfo.getDescription().getVersion(), pinfo.getDescription().getMain(), pinfo.getDescription().getAuthors()));
+            this.plugins.add(new PluginInfo(pinfo.getDescription().getName(), pinfo.getDescription().getVersion(),
+                    pinfo.getDescription().getMain(), pinfo.getDescription().getAuthors()));
         }
     }
 
@@ -47,12 +48,12 @@ public class DebugCollector {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonInString = gson.toJson(this);
         RequestBody formBody = new FormBody.Builder()
-            .add("content", jsonInString)
-            .build();
+                .add("content", jsonInString)
+                .build();
         Request request = new Request.Builder()
-            .url(PASTEBIN_UPLOAD_URL)
-            .post(formBody)
-            .build();
+                .url(PASTEBIN_UPLOAD_URL)
+                .post(formBody)
+                .build();
         try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new Exception("Unexpected code " + response);
@@ -72,6 +73,7 @@ public class DebugCollector {
         private final String version;
         private final String main;
         private final List<String> authors;
+
         private PluginInfo(String name2, String version2, String main2, List<String> authors2) {
             this.name = name2;
             this.version = version2;

@@ -42,9 +42,12 @@ public class Authenticator {
     private static int taskId = -1;
 
     public enum AuthenticationProvider {
-        GOOGLE_DRIVE("Google Drive", "googledrive", "/GoogleDriveCredential.json", "qWd2xXC/ORzdZvUotXoWhHC0POkMNuO/xuwcKWc9s1LLodayZXvkdKimmpOQqWYS6I+qGSrYNb8UCJWMhrgDXhIWEbDvytkQTwq+uNcnfw8=", "pasQz0KvtyC7o6CrlLPSMVV9Y0RMX76cXzsAbBoCBxI="),
-        ONEDRIVE("OneDrive", "onedrive", "/OneDriveCredential.json", "Ktj7Jd1h0oYNVicuyTBk5fU+gHS+QYReZxZKNZNO9CDxxHaf8bXlw0SKO9jnwc81", ""),
-        DROPBOX("Dropbox", "dropbox", "/DropboxCredential.json", "OSpqXymVUFSRnANAmj2DTA==", "4MrYNbN0I6J/fsAFeF00GQ==");
+        GOOGLE_DRIVE("Google Drive", "googledrive", "/GoogleDriveCredential.json",
+                "qWd2xXC/ORzdZvUotXoWhHC0POkMNuO/xuwcKWc9s1LLodayZXvkdKimmpOQqWYS6I+qGSrYNb8UCJWMhrgDXhIWEbDvytkQTwq+uNcnfw8=",
+                "pasQz0KvtyC7o6CrlLPSMVV9Y0RMX76cXzsAbBoCBxI="), ONEDRIVE("OneDrive", "onedrive",
+                        "/OneDriveCredential.json", "Ktj7Jd1h0oYNVicuyTBk5fU+gHS+QYReZxZKNZNO9CDxxHaf8bXlw0SKO9jnwc81",
+                        ""), DROPBOX("Dropbox", "dropbox", "/DropboxCredential.json", "OSpqXymVUFSRnANAmj2DTA==",
+                                "4MrYNbN0I6J/fsAFeF00GQ==");
 
         private final String name;
         private final String id;
@@ -82,19 +85,23 @@ public class Authenticator {
     }
 
     /**
-     * Attempt to authenticate a user with the specified authentication provider 
-     * using the OAuth 2.0-device authorization grant flow.
-     * 
-     * @param provider an {@code AuthenticationProvider}
-     * @param initiator user who initiated the authentication
+     * Attempt to authenticate a user with the specified authentication provider
+     * using the OAuth 2.0-device
+     * authorization grant flow.
+     *
+     * @param provider
+     *            an {@code AuthenticationProvider}
+     * @param initiator
+     *            user who initiated the authentication
      */
     public static void authenticateUser(final AuthenticationProvider provider, final CommandSender initiator) {
         DriveBackup plugin = DriveBackup.getInstance();
-        Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).to(initiator).toConsole(false).send();
+        Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).to(initiator)
+                .toConsole(false).send();
         cancelPollTask();
         try {
             FormBody.Builder requestBody = new FormBody.Builder()
-                .add("type", provider.getId());
+                    .add("type", provider.getId());
             String requestEndpoint;
             if (provider == AuthenticationProvider.ONEDRIVE) {
                 requestBody.add("client_id", Obfusticate.decrypt(provider.getClientId()));
@@ -105,9 +112,9 @@ public class Authenticator {
                 requestEndpoint = REQUEST_CODE_ENDPOINT;
             }
             Request request = new Request.Builder()
-                .url(requestEndpoint)
-                .post(requestBody.build())
-                .build();
+                    .url(requestEndpoint)
+                    .post(requestBody.build())
+                    .build();
             Response response = DriveBackup.httpClient.newCall(request).execute();
             JSONObject parsedResponse = new JSONObject(response.body().string());
             response.close();
@@ -116,17 +123,17 @@ public class Authenticator {
             String verificationUri = parsedResponse.getString("verification_uri");
             long responseCheckDelay = SchedulerUtil.sToTicks(parsedResponse.getLong("interval"));
             logger.log(
-                intl("link-account-code"),
-                "link-url", verificationUri,
-                "link-code", userCode,
-                "provider", provider.getName());
+                    intl("link-account-code"),
+                    "link-url", verificationUri,
+                    "link-code", userCode,
+                    "provider", provider.getName());
             taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 @Override
                 public void run() {
                     try {
                         FormBody.Builder requestBody = new FormBody.Builder()
-                            .add("device_code", deviceCode)
-                            .add("user_code", userCode);
+                                .add("device_code", deviceCode)
+                                .add("user_code", userCode);
                         String requestEndpoint;
                         if (provider == AuthenticationProvider.ONEDRIVE) {
                             requestBody.add("client_id", Obfusticate.decrypt(provider.getClientId()));
@@ -137,9 +144,9 @@ public class Authenticator {
                             requestEndpoint = POLL_VERIFICATION_ENDPOINT;
                         }
                         Request request = new Request.Builder()
-                            .url(requestEndpoint)
-                            .post(requestBody.build())
-                            .build();
+                                .url(requestEndpoint)
+                                .post(requestBody.build())
+                                .build();
                         Response response = DriveBackup.httpClient.newCall(request).execute();
                         JSONObject parsedResponse = new JSONObject(response.body().string());
                         response.close();
@@ -160,10 +167,10 @@ public class Authenticator {
                                 linkSuccess(initiator, provider, logger);
                             }
                             cancelPollTask();
-                        } else if (
-                            (provider == AuthenticationProvider.ONEDRIVE && !parsedResponse.getString("error").equals("authorization_pending")) ||
-                            (provider != AuthenticationProvider.ONEDRIVE && !parsedResponse.get("msg").equals("code_not_authenticated"))
-                            ) {
+                        } else if ((provider == AuthenticationProvider.ONEDRIVE
+                                && !parsedResponse.getString("error").equals("authorization_pending")) ||
+                                (provider != AuthenticationProvider.ONEDRIVE
+                                        && !parsedResponse.get("msg").equals("code_not_authenticated"))) {
                             MessageUtil.Builder().text(parsedResponse.toString()).send();
                             throw new UploadException();
                         }
@@ -204,7 +211,8 @@ public class Authenticator {
         }
     }
 
-    public static void linkSuccess(CommandSender initiator, @NotNull AuthenticationProvider provider, @NotNull Logger logger) {
+    public static void linkSuccess(CommandSender initiator, @NotNull AuthenticationProvider provider,
+            @NotNull Logger logger) {
         logger.log(intl("link-provider-complete"), "provider", provider.getName());
         enableBackupMethod(provider, logger);
         DriveBackup.reloadLocalConfig();

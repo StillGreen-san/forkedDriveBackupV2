@@ -41,20 +41,20 @@ public class UpdateChecker {
                         logger.log(intl("update-checker-started"));
                         hasSentStartMessage = true;
                     }
-                    //get versions
+                    // get versions
                     currentVersion = checker.getCurrent();
                     latestVersion = checker.getLatest();
-                    //check if the current version is outdated
+                    // check if the current version is outdated
                     if (latestVersion.isAfter(currentVersion)) {
                         logger.log(
-                            intl("update-checker-new-release"),
-                            "latest-version", latestVersion.toString(),
-                            "current-version", currentVersion.toString());
+                                intl("update-checker-new-release"),
+                                "latest-version", latestVersion.toString(),
+                                "current-version", currentVersion.toString());
                     } else if (currentVersion.isAfter(latestVersion)) {
                         logger.log(
-                            intl("update-checker-unsupported-release"),
-                            "latest-version", latestVersion.toString(),
-                            "current-version", currentVersion.toString());
+                                intl("update-checker-unsupported-release"),
+                                "latest-version", latestVersion.toString(),
+                                "current-version", currentVersion.toString());
                     }
                 } catch (Exception e) {
                     NetUtil.catchException(e, "dev.bukkit.org", logger);
@@ -67,6 +67,7 @@ public class UpdateChecker {
 
     /**
      * Gets whether an update is available for the plugin
+     *
      * @return whether an update is available
      */
     public static boolean isUpdateAvailable() {
@@ -87,8 +88,8 @@ public class UpdateChecker {
 
     public Version getLatest() throws Exception {
         Request request = new Request.Builder()
-            .url("https://api.curseforge.com/servermods/files?projectids=" + CURSE_PROJECT_ID)
-            .build();
+                .url("https://api.curseforge.com/servermods/files?projectids=" + CURSE_PROJECT_ID)
+                .build();
         JSONArray pluginVersions;
         try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
             if (response.code() != 200) {
@@ -99,7 +100,8 @@ public class UpdateChecker {
         if (pluginVersions.isEmpty()) {
             throw new NoSuchElementException("No plugin versions received");
         }
-        String versionTitle = pluginVersions.getJSONObject(pluginVersions.length() - 1).getString("name").replace("DriveBackupV2-", "").trim();
+        String versionTitle = pluginVersions.getJSONObject(pluginVersions.length() - 1).getString("name")
+                .replace("DriveBackupV2-", "").trim();
         latestDownloadUrl = pluginVersions.getJSONObject(pluginVersions.length() - 1).getString("downloadUrl");
         return Version.parse(versionTitle);
     }
