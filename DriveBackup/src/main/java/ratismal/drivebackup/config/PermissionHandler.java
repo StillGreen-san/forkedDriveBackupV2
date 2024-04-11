@@ -21,9 +21,9 @@ public final class PermissionHandler {
      * Checks if the specified player has the specified permission
      *
      * @param player
-     *            the player
+     *         the player
      * @param permission
-     *            the permission
+     *         the permission
      * @return whether they have permissions
      */
     public static boolean hasPerm(@NotNull CommandSender player, Permission permission) {
@@ -38,7 +38,7 @@ public final class PermissionHandler {
      * Returns a list of players with the specified permission
      *
      * @param permission
-     *            the permission, as a {@code String}
+     *         the permission, as a {@code String}
      * @return the list of players
      */
     @NotNull

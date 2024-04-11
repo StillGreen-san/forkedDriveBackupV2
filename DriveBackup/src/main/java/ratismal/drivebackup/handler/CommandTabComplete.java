@@ -29,13 +29,13 @@ public class CommandTabComplete implements TabCompleter {
      * Command tab completer
      *
      * @param player
-     *            Player, who sent command
+     *         Player, who sent command
      * @param cmd
-     *            Command that was sent
+     *         Command that was sent
      * @param label
-     *            Command alias that was used
+     *         Command alias that was used
      * @param args
-     *            Arguments that followed command
+     *         Arguments that followed command
      * @return String list of possible tab completions
      */
     @Override

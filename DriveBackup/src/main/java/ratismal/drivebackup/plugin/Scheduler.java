@@ -75,10 +75,10 @@ public class Scheduler {
                         startingOccurrence = startingOccurrence.plusWeeks(1);
                     }
                     backupTasks.add(taskScheduler.runTaskTimerAsynchronously(
-                            DriveBackup.getInstance(),
-                            new UploadThread(),
-                            SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(now, startingOccurrence)),
-                            SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(previousOccurrence, nextOccurrence)))
+                                    DriveBackup.getInstance(),
+                                    new UploadThread(),
+                                    SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(now, startingOccurrence)),
+                                    SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(previousOccurrence, nextOccurrence)))
                             .getTaskId());
                     backupDatesList.add(startingOccurrence);
                 }

@@ -10,7 +10,7 @@ public class ServerUtil {
      * Turns the server auto save on/off
      *
      * @param autoSave
-     *            whether to save automatically
+     *         whether to save automatically
      */
     public static void setAutoSave(boolean autoSave) {
         if (!ConfigParser.getConfig().backupStorage.disableSavingDuringBackups) {

@@ -115,9 +115,9 @@ public class GoogleDriveUploader extends Uploader {
                 JSON_FACTORY,
                 setTimeout(new Credential(
                         BearerToken.authorizationHeaderAccessMethod())
-                                .setAccessToken(parsedResponse.getString("access_token"))))
-                                        .setApplicationName("DriveBackupV2")
-                                        .build();
+                        .setAccessToken(parsedResponse.getString("access_token"))))
+                .setApplicationName("DriveBackupV2")
+                .build();
     }
 
     @Override
@@ -126,14 +126,11 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Sets the connect/read timeouts of the Google Drive Client by implementing
-     * {@code HttpRequestInitializer}
+     * Sets the connect/read timeouts of the Google Drive Client by implementing {@code HttpRequestInitializer}
      *
      * @param requestInitializer
-     *            the default {@code HttpRequestInitializer} provided by the Google
-     *            Drive Client
-     * @return the modified {@code HttpRequestInitializer} with the connect/read
-     *         timeouts set
+     *         the default {@code HttpRequestInitializer} provided by the Google Drive Client
+     * @return the modified {@code HttpRequestInitializer} with the connect/read timeouts set
      */
     @NotNull
     @Contract(value = "_ -> new", pure = true)
@@ -151,7 +148,7 @@ public class GoogleDriveUploader extends Uploader {
      * Tests the Google Drive account by uploading a small file
      *
      * @param testFile
-     *            the file to upload during the test
+     *         the file to upload during the test
      */
     public void test(java.io.File testFile) {
         try {
@@ -182,13 +179,12 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the authenticated user's Google Drive inside a
-     * folder for the specified file type.
+     * Uploads the specified file to the authenticated user's Google Drive inside a folder for the specified file type.
      *
      * @param file
-     *            the file
+     *         the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void uploadFile(java.io.File file, String type) {
         try {
@@ -306,14 +302,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the specified parent folder in
-     * the authenticated user's Google
+     * Creates a folder with the specified name in the specified parent folder in the authenticated user's Google
      * Drive.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param parent
-     *            the parent folder
+     *         the parent folder
      * @return the created folder
      * @throws Exception
      */
@@ -334,13 +329,12 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the authenticated user's
-     * specified Shared Drive.
+     * Creates a folder with the specified name in the authenticated user's specified Shared Drive.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param driveId
-     *            the parent folder
+     *         the parent folder
      * @return the created folder
      * @throws Exception
      */
@@ -361,11 +355,10 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the root of the authenticated
-     * user's Google Drive.
+     * Creates a folder with the specified name in the root of the authenticated user's Google Drive.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @return the created folder
      * @throws Exception
      */
@@ -383,14 +376,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the specified Shared Drive of the authenticated user's
-     * Google Drive with the specified
+     * Returns the folder in the specified Shared Drive of the authenticated user's Google Drive with the specified
      * name.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param driveId
-     *            the ID of the drive to use
+     *         the ID of the drive to use
      * @return the folder or {@code null}
      */
     @Nullable
@@ -417,14 +409,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the specified parent folder of the authenticated user's
-     * Google Drive with the specified
+     * Returns the folder in the specified parent folder of the authenticated user's Google Drive with the specified
      * name.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param parent
-     *            the parent folder
+     *         the parent folder
      * @return the folder or {@code null}
      */
     @Nullable
@@ -452,11 +443,10 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the root of the authenticated user's Google Drive with
-     * the specified name.
+     * Returns the folder in the root of the authenticated user's Google Drive with the specified name.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @return the folder or {@code null}
      */
     @Nullable
@@ -479,12 +469,11 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns a list of files in the specified folder in the authenticated user's
-     * Google Drive, ordered by creation
+     * Returns a list of files in the specified folder in the authenticated user's Google Drive, ordered by creation
      * date.
      *
      * @param folder
-     *            the folder containing the files
+     *         the folder containing the files
      * @return a list of files
      * @throws Exception
      */
@@ -515,15 +504,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files in the specified folder past the number to retain
-     * from the authenticated user's Google
+     * Deletes the oldest files in the specified folder past the number to retain from the authenticated user's Google
      * Drive.
      * <p>
-     * The number of files to retain is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain is specified by the user in the {@code config.yml}
      *
      * @param folder
-     *            the folder containing the files
+     *         the folder containing the files
      * @throws Exception
      */
     private void pruneBackups(File folder) throws Exception {
@@ -538,7 +525,7 @@ public class GoogleDriveUploader extends Uploader {
                     "file-count", String.valueOf(files.size()),
                     "upload-method", getName(),
                     "file-limit", String.valueOf(fileLimit));
-            for (Iterator<ChildReference> iterator = files.iterator(); iterator.hasNext();) {
+            for (Iterator<ChildReference> iterator = files.iterator(); iterator.hasNext(); ) {
                 if (files.size() == fileLimit) {
                     break;
                 }

@@ -18,8 +18,7 @@ public class DriveBackupApi {
     private static ArrayList<Runnable> onBackupErrorRunnables = new ArrayList<>();
 
     /**
-     * Gets whether to proceed with the backup by executing the {@code Callable}s
-     * specified by API users.
+     * Gets whether to proceed with the backup by executing the {@code Callable}s specified by API users.
      *
      * @return whether to proceed
      */
@@ -55,8 +54,7 @@ public class DriveBackupApi {
     }
 
     /**
-     * Runs the {@code Callable}s specified by API users to be run after a backup is
-     * successfully completed.
+     * Runs the {@code Callable}s specified by API users to be run after a backup is successfully completed.
      */
     static void backupDone() {
         for (Runnable runnable : onBackupDoneRunnables) {
@@ -65,8 +63,7 @@ public class DriveBackupApi {
     }
 
     /**
-     * Runs the {@code Callable}s specified by API users to be run after an error
-     * occurs during a backup.
+     * Runs the {@code Callable}s specified by API users to be run after an error occurs during a backup.
      */
     static void backupError() {
         for (Runnable runnable : onBackupErrorRunnables) {
@@ -84,22 +81,18 @@ public class DriveBackupApi {
     }
 
     /**
-     * Runs the specified {@code Callable} after a backup has been initiated (either
-     * manually using
-     * {@code /drivebackup backup} or the API, or automatically with scheduled or
-     * interval-based backups), but before
+     * Runs the specified {@code Callable} after a backup has been initiated (either manually using
+     * {@code /drivebackup backup} or the API, or automatically with scheduled or interval-based backups), but before
      * the backup process has been started.
      * <p>
-     * Multiple {@code Callable}s can be specified by calling this method multiple
-     * times.
+     * Multiple {@code Callable}s can be specified by calling this method multiple times.
      * <p>
      * If any {@code Callable} returns {@code false}, the backup will be canceled
      * <p>
-     * If the {@code Callable} doesn't return in 10 seconds, the {@code Callable}
-     * will be ignored.
+     * If the {@code Callable} doesn't return in 10 seconds, the {@code Callable} will be ignored.
      *
      * @param callable
-     *            the {@code Callable}
+     *         the {@code Callable}
      */
     public static void beforeBackupStart(Callable<Boolean> callable) {
         beforeBackupStartCallables.add(callable);
@@ -109,7 +102,7 @@ public class DriveBackupApi {
      * Runs the specified {@code Runnable} after a backup is successfully completed
      *
      * @param runnable
-     *            the {@code Runnable}
+     *         the {@code Runnable}
      */
     public static void onBackupDone(Runnable runnable) {
         onBackupDoneRunnables.add(runnable);
@@ -119,7 +112,7 @@ public class DriveBackupApi {
      * Runs the specified {@code Runnable} after an error occurs during a backup
      *
      * @param runnable
-     *            the {@code Runnable}
+     *         the {@code Runnable}
      */
     public static void onBackupError(Runnable runnable) {
         onBackupErrorRunnables.add(runnable);
@@ -146,8 +139,7 @@ public class DriveBackupApi {
     /**
      * Returns the message sent to chat when {@code /drivebackup nextbackup} is run
      * <p>
-     * For more information about the {@code /drivebackup nextbackup} command, see
-     * <a href=
+     * For more information about the {@code /drivebackup nextbackup} command, see <a href=
      * "https://github.com/MaxMaeder/DriveBackupV2/wiki/Commands#drivebackup-nextbackup">this</a>
      *
      * @return the message

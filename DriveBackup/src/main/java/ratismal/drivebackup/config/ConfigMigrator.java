@@ -76,9 +76,9 @@ public class ConfigMigrator {
      * Migrates a setting from the specified old path in the config to the new path.
      *
      * @param oldPath
-     *            the old path
+     *         the old path
      * @param newPath
-     *            the new path
+     *         the new path
      */
     private void migrate(String oldPath, String newPath) {
         config.set(newPath, config.get(oldPath));
@@ -86,13 +86,12 @@ public class ConfigMigrator {
     }
 
     /**
-     * Migrates a setting from the specified old path in the config to the new path
-     * in the localization config.
+     * Migrates a setting from the specified old path in the config to the new path in the localization config.
      *
      * @param oldPath
-     *            the old path
+     *         the old path
      * @param newPath
-     *            the new path
+     *         the new path
      */
     private void migrateIntl(String oldPath, String newPath) {
         localizationConfig.set(newPath, config.get(oldPath));

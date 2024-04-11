@@ -52,8 +52,7 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Creates an instance of the {@code FTPUploader} object using the server
-     * credentials specified by the user in the
+     * Creates an instance of the {@code FTPUploader} object using the server credentials specified by the user in the
      * {@code config.yml}
      */
     public FTPUploader(UploadLogger logger, FTPBackupMethod ftp) {
@@ -80,32 +79,28 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Creates an instance of the {@code FTPUploader} object using the specified
-     * credentials
+     * Creates an instance of the {@code FTPUploader} object using the specified credentials
      *
      * @param host
-     *            the hostname of the FTP server
+     *         the hostname of the FTP server
      * @param port
-     *            the port
+     *         the port
      * @param username
-     *            the username
+     *         the username
      * @param password
-     *            the password (leave blank if none)
+     *         the password (leave blank if none)
      * @param ftps
-     *            whether FTP using SSL
+     *         whether FTP using SSL
      * @param sftp
-     *            whether FTP using SSH
+     *         whether FTP using SSH
      * @param publicKey
-     *            the path to the SSH public key, relative to the "DriveBackupV2
-     *            folder" (leave blank if none)
+     *         the path to the SSH public key, relative to the "DriveBackupV2 folder" (leave blank if none)
      * @param passphrase
-     *            the SSH public key passphrase (leave blank if none)
+     *         the SSH public key passphrase (leave blank if none)
      * @param localBaseFolder
-     *            the path to the folder, which all local file paths are relative
-     *            to.
+     *         the path to the folder, which all local file paths are relative to.
      * @param remoteBaseFolder
-     *            the path to the folder, which all remote file paths are relative
-     *            to.
+     *         the path to the folder, which all remote file paths are relative to.
      */
     public FTPUploader(UploadLogger logger, String host, int port, String username, String password, boolean ftps,
             boolean sftp, String publicKey, String passphrase, String localBaseFolder, String remoteBaseFolder) {
@@ -132,15 +127,15 @@ public class FTPUploader extends Uploader {
      * Authenticates with a server via FTP
      *
      * @param host
-     *            the hostname of the FTP server
+     *         the hostname of the FTP server
      * @param port
-     *            the port
+     *         the port
      * @param username
-     *            the username
+     *         the username
      * @param password
-     *            the password (leave blank if none)
+     *         the password (leave blank if none)
      * @param ftps
-     *            whether FTP using SSL
+     *         whether FTP using SSL
      * @throws Exception
      */
     private void connect(String host, int port, String username, String password, boolean ftps) throws Exception {
@@ -188,11 +183,10 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Tests the connection to the (S)FTP server by connecting and uploading a small
-     * file.
+     * Tests the connection to the (S)FTP server by connecting and uploading a small file.
      *
      * @param testFile
-     *            the file to upload
+     *         the file to upload
      */
     public void test(File testFile) {
         try {
@@ -215,13 +209,12 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the (S)FTP server inside a folder for the
-     * specified file type.
+     * Uploads the specified file to the (S)FTP server inside a folder for the specified file type.
      *
      * @param file
-     *            the file
+     *         the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void uploadFile(File file, String type) {
         try {
@@ -250,13 +243,12 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Downloads the specifed file from the (S)FTP server into a folder for the
-     * specified file type.
+     * Downloads the specifed file from the (S)FTP server into a folder for the specified file type.
      *
      * @param filePath
-     *            the path of the file
+     *         the path of the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void downloadFile(String filePath, String type) {
         try {
@@ -282,11 +274,10 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Returns a list of the paths of the files inside the specified folder and
-     * subfolders.
+     * Returns a list of the paths of the files inside the specified folder and subfolders.
      *
      * @param folderPath
-     *            the path of the folder
+     *         the path of the folder
      * @return the list of file paths
      */
     public ArrayList<String> getFiles(String folderPath) {
@@ -315,15 +306,13 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files past the number to retain from the FTP server inside
-     * the specified folder for the file
+     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file
      * type.
      * <p>
-     * The number of files to retain is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain is specified by the user in the {@code config.yml}
      *
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      * @throws Exception
      */
     private void pruneBackups(String type) throws Exception {
@@ -346,8 +335,7 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Returns a list of ZIP files, and their modification dates inside the current
-     * working directory.
+     * Returns a list of ZIP files, and their modification dates inside the current working directory.
      *
      * @return a map of ZIP files, and their modification dates
      * @throws Exception
@@ -364,11 +352,10 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified path inside the current working
-     * directory, then enters it.
+     * Creates a folder with the specified path inside the current working directory, then enters it.
      *
      * @param path
-     *            the relative path of the folder to create
+     *         the relative path of the folder to create
      * @throws Exception
      */
     private void createThenEnter(String path) throws Exception {
@@ -379,8 +366,7 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Resets the current working directory to what it was when connection to the
-     * SFTP server was established.
+     * Resets the current working directory to what it was when connection to the SFTP server was established.
      *
      * @throws Exception
      */
@@ -392,9 +378,9 @@ public class FTPUploader extends Uploader {
      * Prepends the specified String to each element in the specified ArrayList.
      *
      * @param list
-     *            the ArrayList
+     *         the ArrayList
      * @param string
-     *            the String
+     *         the String
      * @return the new ArrayList
      */
     @Contract("_, _ -> param1")

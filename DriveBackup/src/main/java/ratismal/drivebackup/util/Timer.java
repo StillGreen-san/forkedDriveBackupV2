@@ -47,7 +47,7 @@ public class Timer {
      * Construct an upload message
      *
      * @param file
-     *            file that was uploaded
+     *         file that was uploaded
      * @return message
      */
     public String getUploadTimeMessage(@NotNull File file) {

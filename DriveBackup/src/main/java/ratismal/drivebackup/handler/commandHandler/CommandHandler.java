@@ -27,13 +27,13 @@ public class CommandHandler implements CommandExecutor {
      * Handles commands sent by players
      *
      * @param sender
-     *            the player who sent command
+     *         the player who sent command
      * @param command
-     *            the command that was sent
+     *         the command that was sent
      * @param label
-     *            the command alias that was used
+     *         the command alias that was used
      * @param args
-     *            any arguments that followed the command
+     *         any arguments that followed the command
      * @return whether the command was handled
      */
     public boolean onCommand(CommandSender sender, @NotNull Command command, String label, String[] args) {

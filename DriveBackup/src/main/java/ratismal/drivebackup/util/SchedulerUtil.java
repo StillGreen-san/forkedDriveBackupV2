@@ -18,7 +18,7 @@ public class SchedulerUtil {
      * Cancels the specified tasks
      *
      * @param taskList
-     *            a List of the IDs of the tasks
+     *         a List of the IDs of the tasks
      */
     public static void cancelTasks(@NotNull List<Integer> taskList) {
         for (int task : taskList) {
@@ -32,7 +32,7 @@ public class SchedulerUtil {
      * Converts the specified number of seconds to game ticks
      *
      * @param seconds
-     *            the number of seconds
+     *         the number of seconds
      * @return the number of game ticks
      */
     public static long sToTicks(long seconds) {
@@ -43,7 +43,7 @@ public class SchedulerUtil {
      * Parses the time
      *
      * @param time
-     *            the time, as a String
+     *         the time, as a String
      * @return the parsed time
      */
     @NotNull

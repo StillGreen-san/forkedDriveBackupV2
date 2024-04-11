@@ -56,7 +56,7 @@ public class ConfigParser {
      * Creates an instance of the {@code Config} object
      *
      * @param config
-     *            A reference to the plugin's {@code config.yml}
+     *         A reference to the plugin's {@code config.yml}
      */
     public ConfigParser(FileConfiguration config) {
         this.config = config;
@@ -66,7 +66,7 @@ public class ConfigParser {
      * Reloads the plugin's {@code config.yml}
      *
      * @param config
-     *            A reference to the plugin's {@code config.yml}
+     *         A reference to the plugin's {@code config.yml}
      */
     public void reload(FileConfiguration config, List<CommandSender> initiator) {
         this.config = config;

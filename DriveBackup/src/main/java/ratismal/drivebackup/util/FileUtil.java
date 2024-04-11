@@ -39,14 +39,13 @@ public class FileUtil {
     }
 
     /**
-     * Gets the local backups in the specified folder as a {@code TreeMap} with
-     * their creation date and a reference to
+     * Gets the local backups in the specified folder as a {@code TreeMap} with their creation date and a reference to
      * them.
      *
      * @param location
-     *            the location of the folder containing the backups
+     *         the location of the folder containing the backups
      * @param formatter
-     *            the format of the file name
+     *         the format of the file name
      * @return The list of backups
      */
     public TreeMap<Long, File> getLocalBackups(String location, LocalDateTimeFormatter formatter) {
@@ -76,12 +75,11 @@ public class FileUtil {
      * Creates a local backup zip file for the specified file/folder.
      *
      * @param location
-     *            the location of the file or folder
+     *         the location of the file or folder
      * @param formatter
-     *            the format of the file name
+     *         the format of the file name
      * @param blacklistGlobs
-     *            a list of glob patterns of files/folders to not include in the
-     *            backup.
+     *         a list of glob patterns of files/folders to not include in the backup.
      * @throws Exception
      */
     public void makeBackup(@NotNull String location, LocalDateTimeFormatter formatter, List<String> blacklistGlobs)
@@ -133,16 +131,14 @@ public class FileUtil {
     }
 
     /**
-     * Deletes the oldest files in the specified folder past the number to retain
-     * locally.
+     * Deletes the oldest files in the specified folder past the number to retain locally.
      * <p>
-     * The number of files to retain locally is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain locally is specified by the user in the {@code config.yml}
      *
      * @param location
-     *            the location of the folder containing the backups
+     *         the location of the folder containing the backups
      * @param formatter
-     *            the format of the file name
+     *         the format of the file name
      */
     public void pruneLocalBackups(String location, LocalDateTimeFormatter formatter) {
         location = escapeBackupLocation(location);
@@ -189,11 +185,11 @@ public class FileUtil {
      * Zips files in the specified folder into the specified file location.
      *
      * @param inputFolderPath
-     *            the path of the zip file to create
+     *         the path of the zip file to create
      * @param outputFilePath
-     *            the path of the folder to put it in
+     *         the path of the folder to put it in
      * @param fileList
-     *            file to include in the zip
+     *         file to include in the zip
      */
     private void zipIt(String inputFolderPath, String outputFilePath, BackupFileList fileList) throws Exception {
         byte[] buffer = new byte[1024];
@@ -287,11 +283,10 @@ public class FileUtil {
     }
 
     /**
-     * Generates a list of files to put in the zip created from the specified
-     * folder.
+     * Generates a list of files to put in the zip created from the specified folder.
      *
      * @param inputFolderPath
-     *            The path of the folder to create the zip from
+     *         The path of the folder to create the zip from
      * @throws Exception
      */
     @NotNull
@@ -302,15 +297,14 @@ public class FileUtil {
     }
 
     /**
-     * Adds the specified file or folder to the list of files to put in the zip
-     * created from the specified folder.
+     * Adds the specified file or folder to the list of files to put in the zip created from the specified folder.
      *
      * @param file
-     *            the file or folder to add
+     *         the file or folder to add
      * @param inputFolderPath
-     *            the path of the folder to create the zip
+     *         the path of the folder to create the zip
      * @param fileList
-     *            the list of files to add the specified file or folder to.
+     *         the list of files to add the specified file or folder to.
      * @throws Exception
      */
     private void generateFileList(@NotNull File file, String inputFolderPath, BackupFileList fileList)
@@ -343,11 +337,10 @@ public class FileUtil {
     }
 
     /**
-     * Removes ".." from the location string to keep the location's backup folder
-     * within the local-save-directory.
+     * Removes ".." from the location string to keep the location's backup folder within the local-save-directory.
      *
      * @param location
-     *            the unescaped location
+     *         the unescaped location
      * @return the escaped location
      */
     @NotNull
@@ -360,9 +353,9 @@ public class FileUtil {
      * Finds all folders that match a glob
      *
      * @param glob
-     *            the glob to search
+     *         the glob to search
      * @param rootPath
-     *            the path to start searching from
+     *         the path to start searching from
      * @return List of all folders that match this glob under rootPath
      */
     public static List<Path> generateGlobFolderList(String glob, String rootPath) {
@@ -382,7 +375,7 @@ public class FileUtil {
      * In other words, whether the folder is the folder containing the server jar.
      *
      * @param folderPath
-     *            the path of the folder
+     *         the path of the folder
      * @return whether the folder is the base folder
      * @throws Exception
      */
@@ -394,7 +387,7 @@ public class FileUtil {
      * Deletes the specified folder
      *
      * @param folder
-     *            the folder to be deleted
+     *         the folder to be deleted
      * @return whether deleting the folder was successful
      */
     public static boolean deleteFolder(@NotNull File folder) {

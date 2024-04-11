@@ -45,9 +45,9 @@ public class Authenticator {
         GOOGLE_DRIVE("Google Drive", "googledrive", "/GoogleDriveCredential.json",
                 "qWd2xXC/ORzdZvUotXoWhHC0POkMNuO/xuwcKWc9s1LLodayZXvkdKimmpOQqWYS6I+qGSrYNb8UCJWMhrgDXhIWEbDvytkQTwq+uNcnfw8=",
                 "pasQz0KvtyC7o6CrlLPSMVV9Y0RMX76cXzsAbBoCBxI="), ONEDRIVE("OneDrive", "onedrive",
-                        "/OneDriveCredential.json", "Ktj7Jd1h0oYNVicuyTBk5fU+gHS+QYReZxZKNZNO9CDxxHaf8bXlw0SKO9jnwc81",
-                        ""), DROPBOX("Dropbox", "dropbox", "/DropboxCredential.json", "OSpqXymVUFSRnANAmj2DTA==",
-                                "4MrYNbN0I6J/fsAFeF00GQ==");
+                "/OneDriveCredential.json", "Ktj7Jd1h0oYNVicuyTBk5fU+gHS+QYReZxZKNZNO9CDxxHaf8bXlw0SKO9jnwc81",
+                ""), DROPBOX("Dropbox", "dropbox", "/DropboxCredential.json", "OSpqXymVUFSRnANAmj2DTA==",
+                "4MrYNbN0I6J/fsAFeF00GQ==");
 
         private final String name;
         private final String id;
@@ -85,14 +85,13 @@ public class Authenticator {
     }
 
     /**
-     * Attempt to authenticate a user with the specified authentication provider
-     * using the OAuth 2.0-device
+     * Attempt to authenticate a user with the specified authentication provider using the OAuth 2.0-device
      * authorization grant flow.
      *
      * @param provider
-     *            an {@code AuthenticationProvider}
+     *         an {@code AuthenticationProvider}
      * @param initiator
-     *            user who initiated the authentication
+     *         user who initiated the authentication
      */
     public static void authenticateUser(final AuthenticationProvider provider, final CommandSender initiator) {
         DriveBackup plugin = DriveBackup.getInstance();

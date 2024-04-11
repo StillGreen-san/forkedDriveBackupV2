@@ -30,8 +30,7 @@ public class WebDAVUploader extends Uploader {
     public static final String UPLOADER_NAME = "WebDAV";
 
     /**
-     * Creates an instance of the {@code WebDAVUploader} object using the server
-     * credentials specified by the user in
+     * Creates an instance of the {@code WebDAVUploader} object using the server credentials specified by the user in
      * the {@code config.yml}
      */
     public WebDAVUploader(UploadLogger logger, WebDAVBackupMethod webdav) {
@@ -63,11 +62,10 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Tests the connection to the WebDAV server by connecting and uploading a small
-     * file.
+     * Tests the connection to the WebDAV server by connecting and uploading a small file.
      *
      * @param testFile
-     *            the file to upload
+     *         the file to upload
      */
     public void test(File testFile) {
         try {
@@ -89,13 +87,12 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the WebDAV server inside a folder for the
-     * specified file type.
+     * Uploads the specified file to the WebDAV server inside a folder for the specified file type.
      *
      * @param file
-     *            the file
+     *         the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void uploadFile(File file, String type) {
         try {
@@ -118,11 +115,10 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Returns a list of the paths of the files inside the specified folder and
-     * subfolders.
+     * Returns a list of the paths of the files inside the specified folder and subfolders.
      *
      * @param folderPath
-     *            the path of the folder
+     *         the path of the folder
      * @return the list of file paths
      */
     public ArrayList<String> getFiles(String folderPath) {
@@ -146,15 +142,13 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files past the number to retain from the FTP server inside
-     * the specified folder for the file
+     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file
      * type.
      * <p>
-     * The number of files to retain is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain is specified by the user in the {@code config.yml}
      *
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      * @throws Exception
      */
     public void pruneBackups(String type) throws Exception {
@@ -178,8 +172,7 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Returns a list of ZIP files, and their modification dates inside the current
-     * working directory.
+     * Returns a list of ZIP files, and their modification dates inside the current working directory.
      *
      * @return a map of ZIP files, and their modification dates
      * @throws Exception
@@ -204,11 +197,10 @@ public class WebDAVUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified path inside the current working
-     * directory, then enters it.
+     * Creates a folder with the specified path inside the current working directory, then enters it.
      *
      * @param path
-     *            the relative path of the folder to create
+     *         the relative path of the folder to create
      */
     private void createDirectory(String path) {
         path = rstrip(path, '/');
@@ -232,9 +224,9 @@ public class WebDAVUploader extends Uploader {
      * Prepends the specified String to each element in the specified ArrayList.
      *
      * @param list
-     *            the ArrayList
+     *         the ArrayList
      * @param string
-     *            the String
+     *         the String
      * @return the new ArrayList
      */
     @Contract("_, _ -> param1")

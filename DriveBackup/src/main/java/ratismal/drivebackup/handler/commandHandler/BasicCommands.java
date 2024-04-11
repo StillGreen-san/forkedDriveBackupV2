@@ -29,7 +29,7 @@ public final class BasicCommands {
      * Sends a list of links to help resources to the specified player.
      *
      * @param player
-     *            the player to send the message to
+     *         the player to send the message to
      */
     public static void sendDocs(CommandSender player) {
         MessageUtil.Builder()
@@ -43,11 +43,10 @@ public final class BasicCommands {
     }
 
     /**
-     * Sends a message with the current plugin, java, and server software version to
-     * the specified player.
+     * Sends a message with the current plugin, java, and server software version to the specified player.
      *
      * @param player
-     *            the player to send the message to
+     *         the player to send the message to
      */
     public static void sendVersion(CommandSender player) {
         MessageUtil builder = MessageUtil.Builder()
@@ -72,7 +71,7 @@ public final class BasicCommands {
      * Sends a list of commands and what they do to the specified player.
      *
      * @param player
-     *            the player to send the message to
+     *         the player to send the message to
      */
     public static void sendHelp(CommandSender player) {
         MessageUtil.Builder()
@@ -86,11 +85,10 @@ public final class BasicCommands {
     }
 
     /**
-     * Sends the configured list of backup locations to the specified player, and a
-     * link to learn how to change them.
+     * Sends the configured list of backup locations to the specified player, and a link to learn how to change them.
      *
      * @param player
-     *            the player to send the message to
+     *         the player to send the message to
      */
     public static void sendBriefBackupList(CommandSender player) {
         Config config = ConfigParser.getConfig();
@@ -132,7 +130,7 @@ public final class BasicCommands {
      * Tells the specified player they don't have permissions to run a command.
      *
      * @param player
-     *            the player to send the message to
+     *         the player to send the message to
      */
     public static void sendNoPerms(CommandSender player) {
         MessageUtil.Builder().text(intl("no-perm")).to(player).toConsole(false).send();

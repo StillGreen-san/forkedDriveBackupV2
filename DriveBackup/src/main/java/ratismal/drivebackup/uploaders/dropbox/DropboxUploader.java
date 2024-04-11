@@ -43,7 +43,7 @@ public class DropboxUploader extends Uploader {
      * Tests the Dropbox account by uploading a small file
      *
      * @param testFile
-     *            the file to upload during the test
+     *         the file to upload during the test
      */
     public void test(@NotNull java.io.File testFile) {
         try (DataInputStream dis = new DataInputStream(Files.newInputStream(testFile.toPath()))) {
@@ -97,13 +97,12 @@ public class DropboxUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the authenticated user's Dropbox inside a
-     * folder for the specified file type.
+     * Uploads the specified file to the authenticated user's Dropbox inside a folder for the specified file type.
      *
      * @param file
-     *            the file
+     *         the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void uploadFile(@NotNull final java.io.File file, @NotNull final String type) {
         String destination = ConfigParser.getConfig().backupStorage.remoteDirectory;
@@ -207,15 +206,13 @@ public class DropboxUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files past the number to retain from the FTP server inside
-     * the specified folder for the file
+     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file
      * type.
      * <p>
-     * The number of files to retain is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain is specified by the user in the {@code config.yml}
      *
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      * @throws Exception
      */
     private void pruneBackups(String type) throws Exception {
@@ -251,8 +248,7 @@ public class DropboxUploader extends Uploader {
     }
 
     /**
-     * Returns a list of ZIP files, and their modification dates inside the given
-     * folder.
+     * Returns a list of ZIP files, and their modification dates inside the given folder.
      *
      * @return a map of files, and their modification dates
      * @throws Exception

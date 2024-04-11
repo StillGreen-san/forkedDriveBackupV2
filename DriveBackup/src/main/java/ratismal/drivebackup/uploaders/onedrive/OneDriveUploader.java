@@ -110,7 +110,7 @@ public class OneDriveUploader extends Uploader {
      * Tests the OneDrive account by uploading a small file
      *
      * @param testFile
-     *            the file to upload during the test
+     *         the file to upload during the test
      */
     public void test(java.io.File testFile) {
         try {
@@ -148,13 +148,12 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the authenticated user's OneDrive inside a
-     * folder for the specified file type.
+     * Uploads the specified file to the authenticated user's OneDrive inside a folder for the specified file type.
      *
      * @param file
-     *            the file
+     *         the file
      * @param type
-     *            the type of file (ex. plugins, world)
+     *         the type of file (ex. plugins, world)
      */
     public void uploadFile(java.io.File file, String type) throws IOException {
         try {
@@ -243,13 +242,12 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the specified parent folder in
-     * the authenticated user's OneDrive.
+     * Creates a folder with the specified name in the specified parent folder in the authenticated user's OneDrive.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param parent
-     *            the parent folder
+     *         the parent folder
      * @return the created folder
      * @throws IOException
      */
@@ -289,11 +287,10 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the root of the authenticated
-     * user's OneDrive.
+     * Creates a folder with the specified name in the root of the authenticated user's OneDrive.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @return the created folder
      * @throws IOException
      */
@@ -325,13 +322,12 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the specified parent folder of the authenticated user's
-     * OneDrive with the specified name.
+     * Returns the folder in the specified parent folder of the authenticated user's OneDrive with the specified name.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @param parent
-     *            the parent folder
+     *         the parent folder
      * @return the folder or {@code null}
      */
     @Nullable
@@ -358,11 +354,10 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the root of the authenticated user's OneDrive with the
-     * specified name.
+     * Returns the folder in the root of the authenticated user's OneDrive with the specified name.
      *
      * @param name
-     *            the name of the folder
+     *         the name of the folder
      * @return the folder or {@code null}
      */
     @Nullable
@@ -389,15 +384,13 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files in the specified folder past the number to retain
-     * from the authenticated user's
+     * Deletes the oldest files in the specified folder past the number to retain from the authenticated user's
      * OneDrive.
      * <p>
-     * The number of files to retain is specified by the user in the
-     * {@code config.yml}
+     * The number of files to retain is specified by the user in the {@code config.yml}
      *
      * @param parent
-     *            the folder containing the files
+     *         the folder containing the files
      * @throws Exception
      */
     private void pruneBackups(File parent) throws Exception {
@@ -425,7 +418,7 @@ public class OneDriveUploader extends Uploader {
                     "upload-method", getName(),
                     "file-limit", String.valueOf(fileLimit));
         }
-        for (Iterator<String> iterator = fileIDs.listIterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = fileIDs.listIterator(); iterator.hasNext(); ) {
             String fileIDValue = iterator.next();
             if (fileLimit < fileIDs.size()) {
                 request = new Request.Builder()
@@ -458,7 +451,7 @@ public class OneDriveUploader extends Uploader {
          * Returns a {@code File} with the specified folder added to the file path.
          *
          * @param folder
-         *            the {@code File}
+         *         the {@code File}
          */
         @NotNull
         private File add(String folder) {
@@ -475,7 +468,7 @@ public class OneDriveUploader extends Uploader {
          * Sets the path of the file/folder
          *
          * @param path
-         *            the path, as an {@code String}
+         *         the path, as an {@code String}
          */
         private void setPath(@NotNull String path) {
             filePath.clear();
@@ -525,9 +518,9 @@ public class OneDriveUploader extends Uploader {
          * Creates an instance of the {@code Range} object
          *
          * @param start
-         *            the index of the first byte
+         *         the index of the first byte
          * @param end
-         *            the index of the last byte
+         *         the index of the last byte
          */
         private Range(long start, long end) {
             this.start = start;
@@ -536,8 +529,7 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Resets the number of bytes uploaded in the last chunk, and the number of
-     * bytes uploaded in total.
+     * Resets the number of bytes uploaded in the last chunk, and the number of bytes uploaded in total.
      */
     private void resetRanges() {
         lastUploaded = 0;
@@ -545,12 +537,11 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Sets the number of bytes uploaded in the last chunk, and the number of bytes
-     * uploaded in total from the ranges of
+     * Sets the number of bytes uploaded in the last chunk, and the number of bytes uploaded in total from the ranges of
      * bytes the OneDrive API requested to be uploaded last.
      *
      * @param stringRanges
-     *            the ranges of bytes requested
+     *         the ranges of bytes requested
      */
     private void setRanges(@NotNull String[] stringRanges) {
         Range[] ranges = new Range[stringRanges.length];
@@ -569,8 +560,7 @@ public class OneDriveUploader extends Uploader {
     }
 
     /**
-     * Gets an array of bytes to upload next from the file buffer based on the
-     * number of bytes uploaded so far.
+     * Gets an array of bytes to upload next from the file buffer based on the number of bytes uploaded so far.
      *
      * @return the array of bytes
      * @throws IOException

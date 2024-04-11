@@ -41,19 +41,18 @@ public class MySQLUploader {
     private static final String SQL_END_PATTERN = "-- end";
 
     /**
-     * Creates an instance of the {@code mysqlUploader} object using the specified
-     * credentials
+     * Creates an instance of the {@code mysqlUploader} object using the specified credentials
      *
      * @param host
-     *            the hostname of the MySQL database
+     *         the hostname of the MySQL database
      * @param port
-     *            the port
+     *         the port
      * @param username
-     *            the username
+     *         the username
      * @param password
-     *            the password (leave blank if none)
+     *         the password (leave blank if none)
      * @param useSsl
-     *            whether to connect to the server using SSL/TLS
+     *         whether to connect to the server using SSL/TLS
      */
     public MySQLUploader(String host, int port, String username, String password, boolean useSsl) {
         this.host = host;
@@ -73,29 +72,27 @@ public class MySQLUploader {
     }
 
     /**
-     * Downloads the specified MySQL database with the specified name into a folder
-     * for the specified database type.
+     * Downloads the specified MySQL database with the specified name into a folder for the specified database type.
      *
      * @param name
-     *            the name of the MySQL database
+     *         the name of the MySQL database
      * @param type
-     *            the type of database (ex. users, purchases)
+     *         the type of database (ex. users, purchases)
      */
     public void downloadDatabase(String name, String type) {
         downloadDatabase(name, type, Collections.emptyList());
     }
 
     /**
-     * Downloads the specified MySQL database with the specified name into a folder
-     * for the specified database type,
+     * Downloads the specified MySQL database with the specified name into a folder for the specified database type,
      * excluding the specified tables.
      *
      * @param name
-     *            the name of the MySQL database
+     *         the name of the MySQL database
      * @param type
-     *            the type of database (ex. users, purchases)
+     *         the type of database (ex. users, purchases)
      * @param blacklist
-     *            a list of tables to not include
+     *         a list of tables to not include
      */
     public void downloadDatabase(String name, String type, List<String> blacklist) {
         String connectionUrl = "jdbc:mysql://" + host + ":" + port + "/" + name
@@ -132,7 +129,7 @@ public class MySQLUploader {
      * Gets the names of all the tables in the remote database.
      *
      * @param name
-     *            the database's name
+     *         the database's name
      * @return a list of the table names
      * @throws SQLException
      */
@@ -148,13 +145,12 @@ public class MySQLUploader {
     }
 
     /**
-     * Generate the SQL insert statement needed to create an empty table locally
-     * with the specified name.
+     * Generate the SQL insert statement needed to create an empty table locally with the specified name.
      *
      * @param sql
-     *            where to write the output to
+     *         where to write the output to
      * @param name
-     *            the table's name
+     *         the table's name
      * @throws SQLException
      */
     private void getTableInsertStatement(OutputStreamWriter sql, String name) throws SQLException, IOException {
@@ -175,15 +171,14 @@ public class MySQLUploader {
     }
 
     /**
-     * Generates the SQL insert statements needed to copy all of the specified
-     * remote table's data to the local table.
+     * Generates the SQL insert statements needed to copy all of the specified remote table's data to the local table.
      *
      * @param sql
-     *            where to write the output to
+     *         where to write the output to
      * @param name
-     *            the table's name
+     *         the table's name
      * @throws SQLException
-     *             exception
+     *         exception
      */
     private void getDataInsertStatement(OutputStreamWriter sql, String name) throws SQLException, IOException {
         ResultSet rs = stmt.executeQuery("SELECT * FROM " + "`" + name + "`;");
@@ -283,18 +278,17 @@ public class MySQLUploader {
     }
 
     /**
-     * Generates the SQL insert statements needed to recreate the specified remote
-     * database locally, excluding the
+     * Generates the SQL insert statements needed to recreate the specified remote database locally, excluding the
      * specified tables.
      *
      * @param sql
-     *            where to write the output to
+     *         where to write the output to
      * @param name
-     *            the database's name
+     *         the database's name
      * @param blacklist
-     *            a list of tables to not include
+     *         a list of tables to not include
      * @throws SQLException
-     *             exception
+     *         exception
      */
     private void getInsertStatements(@NotNull OutputStreamWriter sql, String name, List<String> blacklist)
             throws SQLException, IOException {
@@ -333,7 +327,7 @@ public class MySQLUploader {
      * Sets whether an error occurred while accessing the MySQL database
      *
      * @param errorOccurredValue
-     *            whether an error occurred
+     *         whether an error occurred
      */
     private void setErrorOccurred(boolean errorOccurredValue) {
         errorOccurred = errorOccurredValue;

@@ -25,7 +25,7 @@ public class Updater {
      * Initialize the updater.
      *
      * @param file
-     *            The plugin jar file
+     *         The plugin jar file
      */
     public Updater(File file) {
         plugin = DriveBackup.getInstance();

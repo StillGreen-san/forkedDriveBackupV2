@@ -30,9 +30,9 @@ public class TestThread implements Runnable {
      * Creates an instance of the {@code TestThread} object
      *
      * @param initiator
-     *            the player who initiated the test
+     *         the player who initiated the test
      * @param args
-     *            any arguments that followed the command that initiated the test
+     *         any arguments that followed the command that initiated the test
      */
     public TestThread(CommandSender initiator, String[] args) {
         logger = new UploadLogger() {
@@ -102,11 +102,11 @@ public class TestThread implements Runnable {
      * Tests a specific upload method
      *
      * @param testFileName
-     *            name of the test file to upload during the test
+     *         name of the test file to upload during the test
      * @param testFileSize
-     *            the size (in bytes) of the file
+     *         the size (in bytes) of the file
      * @param method
-     *            name of the upload method to test
+     *         name of the upload method to test
      */
     private void testUploadMethod(String testFileName, int testFileSize, @NotNull String method) throws Exception {
         Config config = ConfigParser.getConfig();

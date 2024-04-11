@@ -154,7 +154,7 @@ public class UploadThread implements Runnable {
      * Creates an instance of the {@code UploadThread} object
      *
      * @param initiator
-     *            the player who initiated the backup
+     *         the player who initiated the backup
      */
     public UploadThread(CommandSender initiator) {
         this.initiator = initiator;
@@ -344,11 +344,11 @@ public class UploadThread implements Runnable {
      * Creates a backup file of the specified folder
      *
      * @param location
-     *            path to the folder
+     *         path to the folder
      * @param formatter
-     *            save format configuration
+     *         save format configuration
      * @param blackList
-     *            a configured blacklist (with globs)
+     *         a configured blacklist (with globs)
      */
     private void makeBackupFile(String location, LocalDateTimeFormatter formatter, List<String> blackList) {
         logger.info(intl("backup-local-file-start"), "location", location);
@@ -381,11 +381,11 @@ public class UploadThread implements Runnable {
      * Uploads the most recent backup file to the specified uploaders
      *
      * @param location
-     *            path to the folder
+     *         path to the folder
      * @param formatter
-     *            save format configuration
+     *         save format configuration
      * @param uploaders
-     *            services to upload to
+     *         services to upload to
      */
     private void uploadFile(String location, LocalDateTimeFormatter formatter, List<Uploader> uploaders) {
         try {
@@ -423,12 +423,11 @@ public class UploadThread implements Runnable {
     }
 
     /**
-     * Downloads files from an FTP server and stores them within the
-     * external-backups temporary folder, using the
+     * Downloads files from an FTP server and stores them within the external-backups temporary folder, using the
      * specified external backup settings.
      *
      * @param externalBackup
-     *            the external backup settings
+     *         the external backup settings
      */
     private void makeExternalFileBackup(ExternalFTPSource externalBackup) {
         logger.info(
@@ -508,12 +507,11 @@ public class UploadThread implements Runnable {
     }
 
     /**
-     * Downloads databases from a MySQL server and stores them within the
-     * external-backups temporary folder, using the
+     * Downloads databases from a MySQL server and stores them within the external-backups temporary folder, using the
      * specified external backup settings.
      *
      * @param externalBackup
-     *            the external backup settings
+     *         the external backup settings
      */
     private void makeExternalDatabaseBackup(ExternalMySQLSource externalBackup) {
         logger.info(
@@ -580,8 +578,7 @@ public class UploadThread implements Runnable {
     /**
      * Gets the date/time of the next automatic backup, if enabled.
      *
-     * @return the time and/or date of the next automatic backup formatted using the
-     *         messages in the {@code config.yml}
+     * @return the time and/or date of the next automatic backup formatted using the messages in the {@code config.yml}
      */
     public static String getNextAutoBackup() {
         Config config = ConfigParser.getConfig();
@@ -607,8 +604,7 @@ public class UploadThread implements Runnable {
     }
 
     /**
-     * Sets the time of the next interval-based backup to the current time + the
-     * configured interval.
+     * Sets the time of the next interval-based backup to the current time + the configured interval.
      */
     public static void updateNextIntervalBackupTime() {
         nextIntervalBackupTime = LocalDateTime.now().plus(ConfigParser.getConfig().backupStorage.delay,
@@ -620,11 +616,10 @@ public class UploadThread implements Runnable {
     }
 
     /**
-     * Gets the socket address (ipaddress/hostname:port) of an external backup
-     * server based on the specified settings.
+     * Gets the socket address (ipaddress/hostname:port) of an external backup server based on the specified settings.
      *
      * @param externalBackup
-     *            the external backup settings
+     *         the external backup settings
      * @return the socket address
      */
     @NotNull
@@ -634,12 +629,11 @@ public class UploadThread implements Runnable {
     }
 
     /**
-     * Generates the name for a folder based on the specified external backup
-     * settings to be stored within the
+     * Generates the name for a folder based on the specified external backup settings to be stored within the
      * external-backups temporary folder.
      *
      * @param externalBackup
-     *            the external backup settings
+     *         the external backup settings
      * @return the folder name
      */
     @NotNull
