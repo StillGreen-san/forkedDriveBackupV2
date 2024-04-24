@@ -17,7 +17,7 @@ import java.util.List;
  */
 
 public class CommandTabComplete implements TabCompleter {
-
+    
     public static boolean hasPerm(CommandSender player, Permission permission) {
         if (player.hasPermission(permission.getPermission())) {
             return true;
@@ -28,14 +28,10 @@ public class CommandTabComplete implements TabCompleter {
     /**
      * Command tab completer
      *
-     * @param player
-     *         Player, who sent command
-     * @param cmd
-     *         Command that was sent
-     * @param label
-     *         Command alias that was used
-     * @param args
-     *         Arguments that followed command
+     * @param player Player, who sent command
+     * @param cmd    Command that was sent
+     * @param label  Command alias that was used
+     * @param args   Arguments that followed command
      * @return String list of possible tab completions
      */
     @Override

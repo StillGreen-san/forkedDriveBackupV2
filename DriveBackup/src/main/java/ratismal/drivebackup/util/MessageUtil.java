@@ -32,9 +32,10 @@ public class MessageUtil {
     private final List<Component> message = new ArrayList<>();
     private final Set<CommandSender> recipients = new HashSet<>();
     private Boolean sendToConsole = true;
+    
 
     @NotNull
-    @Contract(" -> new")
+    @Contract (" -> new")
     public static MessageUtil Builder() {
         return new MessageUtil();
     }
@@ -46,7 +47,7 @@ public class MessageUtil {
         addPrefix = prefix;
         return this;
     }
-
+    
     public MessageUtil text(String text) {
         message.add(Component.text(text, getColor()));
         return this;
@@ -59,9 +60,7 @@ public class MessageUtil {
 
     /**
      * Parses & add MiniMessage formatted text to the message
-     *
-     * @param text
-     *         the MiniMessage text
+     * @param text the MiniMessage text
      * @return the calling MessageUtil's instance
      */
     public MessageUtil mmText(String text) {
@@ -71,11 +70,8 @@ public class MessageUtil {
 
     /**
      * Parses & add MiniMessage formatted text to the message
-     *
-     * @param text
-     *         the MiniMessage text
-     * @param placeholders
-     *         optional MiniMessage placeholders
+     * @param text the MiniMessage text
+     * @param placeholders optional MiniMessage placeholders
      * @return the calling MessageUtil's instance
      */
     public MessageUtil mmText(String text, @NotNull String... placeholders) {
@@ -83,25 +79,19 @@ public class MessageUtil {
         for (int i = 0; i < placeholders.length; i += 2) {
             builder.resolver(Placeholder.parsed(placeholders[i], placeholders[i + 1]));
         }
-        message.add(MiniMessage.miniMessage().deserialize("<color:" + getColor().asHexString() + ">" + text,
-                builder.build()));
+        message.add(MiniMessage.miniMessage().deserialize("<color:" + getColor().asHexString() + ">" + text, builder.build()));
         return this;
     }
 
     /**
      * Parses & add MiniMessage formatted text to the message
-     *
-     * @param text
-     *         the MiniMessage text
-     * @param title
-     *         what to replace
-     * @param content
-     *         what to replace with
+     * @param text the MiniMessage text
+     * @param title what to replace
+     * @param content what to replace with
      * @return the calling MessageUtil's instance
      */
     public MessageUtil mmText(String text, String title, Component content) {
-        message.add(MiniMessage.miniMessage().deserialize("<color:" + getColor().asHexString() + ">" + text,
-                TagResolver.resolver(Placeholder.component(title, content))));
+        message.add(MiniMessage.miniMessage().deserialize("<color:" + getColor().asHexString() + ">" + text, TagResolver.resolver(Placeholder.component(title, content))));
         return this;
     }
 
@@ -112,9 +102,7 @@ public class MessageUtil {
 
     /**
      * Adds a player to the list of recipients
-     *
-     * @param player
-     *         the player to be added to the recipients
+     * @param player the player to be added to the recipients
      * @return the calling MessageUtil's instance
      */
     public MessageUtil to(CommandSender player) {
@@ -124,9 +112,7 @@ public class MessageUtil {
 
     /**
      * Adds a list of players to the list of recipients
-     *
-     * @param players
-     *         the list of players to be added to the recipients
+     * @param players the list of players to be added to the recipients
      * @return the calling MessageUtil's instance
      */
     public MessageUtil to(@NotNull List<CommandSender> players) {
@@ -138,14 +124,12 @@ public class MessageUtil {
 
     /**
      * Adds all online players with the specified permissions to the recipients.
-     *
-     * @param permission
-     *         the specified permission to be added to the recipients
+     * @param permission the specified permission to be added to the recipients
      * @return the calling MessageUtil's instance
      */
-    public MessageUtil toPerm(String permission) {
+    public MessageUtil toPerm(Permission permission) {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (PermissionHandler.hasPerm(player, Permission.LINK_ACCOUNTS) && !recipients.contains(player)) {
+            if (PermissionHandler.hasPerm(player, permission) && !recipients.contains(player)) {
                 recipients.add(player);
             }
         }
@@ -154,9 +138,7 @@ public class MessageUtil {
 
     /**
      * Set whether or not if the message should be sent to the console.
-     *
-     * @param value
-     *         boolean
+     * @param value boolean
      * @return the calling MessageUtil's instance
      */
     public MessageUtil toConsole(boolean value) {
@@ -166,7 +148,6 @@ public class MessageUtil {
 
     /**
      * Adds all online players to the list of recipients
-     *
      * @return the calling MessageUtil's instance
      */
     public MessageUtil all() {
@@ -197,25 +178,21 @@ public class MessageUtil {
     }
 
     /**
-     * Sends the stack trace corresponding to the specified exception to the console, only if suppress errors are
-     * disabled.
+     * Sends the stack trace corresponding to the specified exception to the console,
+     * only if suppress errors are disabled.
      * <p>
      * Whether suppress errors is enabled is specified by the user in the {@code config.yml}
-     *
-     * @param exception
-     *         Exception to send the stack trace of
+     * @param exception Exception to send the stack trace of
      */
     public static void sendConsoleException(Exception exception) {
         if (!getConfig().advanced.suppressErrors) {
             exception.printStackTrace();
         }
     }
-
+    
     /**
      * Prefixes the specified message with the plugin name
-     *
-     * @param message
-     *         the message to prefix
+     * @param message the message to prefix
      * @return the prefixed message
      */
     @NotNull
@@ -225,17 +202,15 @@ public class MessageUtil {
 
     /**
      * Translates the color codes in the specified message to the type used internally.
-     *
-     * @param message
-     *         the message to translate
+     * @param message the message to translate
      * @return the translated message
      */
     @NotNull
-    @Contract("_ -> new")
+    @Contract ("_ -> new")
     public static String translateMessageColors(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-
+    
     private static @NotNull Config getConfig() {
         Config config = ConfigParser.getConfig();
         if (config == null) {
@@ -243,10 +218,9 @@ public class MessageUtil {
         }
         return config;
     }
-
+    
     private static @NotNull TextColor getColor() {
-        TextColor color = LegacyComponentSerializer.legacyAmpersand().deserialize(getConfig().messages.defaultColor)
-                .color();
+        TextColor color = LegacyComponentSerializer.legacyAmpersand().deserialize(getConfig().messages.defaultColor).color();
         if (color == null) {
             color = NamedTextColor.DARK_AQUA;
         }

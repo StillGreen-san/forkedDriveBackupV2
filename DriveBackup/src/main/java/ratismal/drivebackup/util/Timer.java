@@ -32,7 +32,6 @@ public class Timer {
 
     /**
      * Ends the timer
-     *
      * @return false if timer was never started
      */
     public boolean end() {
@@ -45,9 +44,7 @@ public class Timer {
 
     /**
      * Construct an upload message
-     *
-     * @param file
-     *         file that was uploaded
+     * @param file file that was uploaded
      * @return message
      */
     public String getUploadTimeMessage(@NotNull File file) {
@@ -56,16 +53,15 @@ public class Timer {
 
         double difference = getTime();
         double length = difference / 1000;
-        double speed = (((double) file.length()) / 1024) / length;
-
+        double speed = ( ((double) file.length()) / 1024) / length;
+        
         return intl("file-upload-message")
-                .replace("<length>", df.format(length))
-                .replace("<speed>", df.format(speed));
+            .replace("<length>", df.format(length))
+            .replace("<speed>", df.format(speed));
     }
 
     /**
      * Calculates the time
-     *
      * @return Calculated time
      */
     public double getTime() {

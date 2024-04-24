@@ -19,7 +19,6 @@ public class DriveBackupApi {
 
     /**
      * Gets whether to proceed with the backup by executing the {@code Callable}s specified by API users.
-     *
      * @return whether to proceed
      */
     static boolean shouldStartBackup() {
@@ -32,20 +31,17 @@ public class DriveBackupApi {
 
         boolean shouldStartBackup = true;
 
-        for (Future<Boolean> future : futures) {
+        for (Future<Boolean> future : futures){
             try {
 
                 if (Boolean.FALSE.equals(future.get(10, TimeUnit.SECONDS))) {
                     shouldStartBackup = false;
-                    MessageUtil.Builder()
-                            .text("Not starting a backup due to a beforeBackupStart() Callable returning false")
-                            .toConsole(true).send();
+                    MessageUtil.Builder().text("Not starting a backup due to a beforeBackupStart() Callable returning false").toConsole(true).send();
 
                     break;
                 }
             } catch (Exception exception) {
-                MessageUtil.Builder().text("Failed to execute a beforeBackupStart() Callable, ignoring").toConsole(true)
-                        .send();
+                MessageUtil.Builder().text("Failed to execute a beforeBackupStart() Callable, ignoring").toConsole(true).send();
                 MessageUtil.sendConsoleException(exception);
             }
         }
@@ -73,7 +69,6 @@ public class DriveBackupApi {
 
     /**
      * Gets the plugin's parsed config as an object
-     *
      * @return the config
      */
     public static Config getConfig() {
@@ -81,18 +76,14 @@ public class DriveBackupApi {
     }
 
     /**
-     * Runs the specified {@code Callable} after a backup has been initiated (either manually using
-     * {@code /drivebackup backup} or the API, or automatically with scheduled or interval-based backups), but before
-     * the backup process has been started.
+     * Runs the specified {@code Callable} after a backup has been initiated (either manually using {@code /drivebackup backup} or the API, or automatically with scheduled or interval-based backups), but before the backup process has been started.
      * <p>
      * Multiple {@code Callable}s can be specified by calling this method multiple times.
      * <p>
      * If any {@code Callable} returns {@code false}, the backup will be canceled
      * <p>
      * If the {@code Callable} doesn't return in 10 seconds, the {@code Callable} will be ignored.
-     *
-     * @param callable
-     *         the {@code Callable}
+     * @param callable the {@code Callable}
      */
     public static void beforeBackupStart(Callable<Boolean> callable) {
         beforeBackupStartCallables.add(callable);
@@ -100,9 +91,7 @@ public class DriveBackupApi {
 
     /**
      * Runs the specified {@code Runnable} after a backup is successfully completed
-     *
-     * @param runnable
-     *         the {@code Runnable}
+     * @param runnable the {@code Runnable}
      */
     public static void onBackupDone(Runnable runnable) {
         onBackupDoneRunnables.add(runnable);
@@ -110,9 +99,7 @@ public class DriveBackupApi {
 
     /**
      * Runs the specified {@code Runnable} after an error occurs during a backup
-     *
-     * @param runnable
-     *         the {@code Runnable}
+     * @param runnable the {@code Runnable}
      */
     public static void onBackupError(Runnable runnable) {
         onBackupErrorRunnables.add(runnable);
@@ -139,9 +126,7 @@ public class DriveBackupApi {
     /**
      * Returns the message sent to chat when {@code /drivebackup nextbackup} is run
      * <p>
-     * For more information about the {@code /drivebackup nextbackup} command, see <a href=
-     * "https://github.com/MaxMaeder/DriveBackupV2/wiki/Commands#drivebackup-nextbackup">this</a>
-     *
+     * For more information about the {@code /drivebackup nextbackup} command, see <a href="https://github.com/MaxMaeder/DriveBackupV2/wiki/Commands#drivebackup-nextbackup">this</a>
      * @return the message
      */
     public static String getNextAutoBackup() {

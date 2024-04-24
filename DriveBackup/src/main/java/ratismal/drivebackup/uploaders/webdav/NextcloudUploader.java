@@ -65,8 +65,7 @@ public class NextcloudUploader extends WebDAVUploader {
             try (FileInputStream _fis = new FileInputStream(file)) {
                 ChunkedFileInputStream fis = new ChunkedFileInputStream(chunksize, _fis);
                 do {
-                    sardine.put(tempdir + String.format("/%020d", fis.getCurrentOffset()), fis, (String) null, true,
-                            fis.available());
+                    sardine.put(tempdir + String.format("/%020d", fis.getCurrentOffset()), fis, (String) null, true, fis.available());
                 } while (fis.next());
                 try {
                     sardine.move(tempdir + "/.file", target.toString());

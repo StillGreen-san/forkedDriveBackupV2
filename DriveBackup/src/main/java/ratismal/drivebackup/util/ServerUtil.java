@@ -8,9 +8,7 @@ import ratismal.drivebackup.plugin.DriveBackup;
 public class ServerUtil {
     /**
      * Turns the server auto save on/off
-     *
-     * @param autoSave
-     *         whether to save automatically
+     * @param autoSave whether to save automatically
      */
     public static void setAutoSave(boolean autoSave) {
         if (!ConfigParser.getConfig().backupStorage.disableSavingDuringBackups) {
@@ -25,7 +23,7 @@ public class ServerUtil {
                 return Boolean.TRUE;
             }).get();
         } catch (Exception ignored) {
-
+        
         }
     }
 }

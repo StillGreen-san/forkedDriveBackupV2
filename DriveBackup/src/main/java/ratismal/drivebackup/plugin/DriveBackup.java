@@ -59,11 +59,11 @@ public class DriveBackup extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         httpClient = new OkHttpClient.Builder()
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(3, TimeUnit.MINUTES)
-                .readTimeout(3, TimeUnit.MINUTES)
-                .addInterceptor(new HttpLogger())
-                .build();
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(3, TimeUnit.MINUTES)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(new HttpLogger())
+            .build();
         adventure = BukkitAudiences.create(plugin);
         chatInputPlayers = new ArrayList<>(1);
         List<CommandSender> configPlayers = PermissionHandler.getPlayersWithPerm(Permission.RELOAD_CONFIG);
@@ -76,9 +76,9 @@ public class DriveBackup extends JavaPlugin {
         config = new ConfigParser(getConfig());
         config.reload(configPlayers);
         MessageUtil.Builder()
-                .to(configPlayers)
-                .mmText(intl("config-loaded"))
-                .send();
+            .to(configPlayers)
+            .mmText(intl("config-loaded"))
+            .send();
         getCommand(CommandHandler.CHAT_KEYWORD).setTabCompleter(new CommandTabComplete());
         getCommand(CommandHandler.CHAT_KEYWORD).setExecutor(new CommandHandler());
         PluginManager pm = getServer().getPluginManager();

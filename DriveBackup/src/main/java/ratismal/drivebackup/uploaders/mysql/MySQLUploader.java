@@ -1,5 +1,6 @@
 /**
- * Uses code from the great library mysql-backup4j https://github.com/SeunMatt/mysql-backup4j
+ * Uses code from the great library mysql-backup4j
+ * https://github.com/SeunMatt/mysql-backup4j
  */
 
 package ratismal.drivebackup.uploaders.mysql;
@@ -34,7 +35,7 @@ public class MySQLUploader {
     private boolean useSsl;
 
     private boolean errorOccurred;
-
+    
     private Statement stmt;
 
     private static final String SQL_START_PATTERN = "-- start";
@@ -42,17 +43,11 @@ public class MySQLUploader {
 
     /**
      * Creates an instance of the {@code mysqlUploader} object using the specified credentials
-     *
-     * @param host
-     *         the hostname of the MySQL database
-     * @param port
-     *         the port
-     * @param username
-     *         the username
-     * @param password
-     *         the password (leave blank if none)
-     * @param useSsl
-     *         whether to connect to the server using SSL/TLS
+     * @param host the hostname of the MySQL database
+     * @param port the port
+     * @param username the username
+     * @param password the password (leave blank if none)
+     * @param useSsl whether to connect to the server using SSL/TLS
      */
     public MySQLUploader(String host, int port, String username, String password, boolean useSsl) {
         this.host = host;
@@ -64,7 +59,6 @@ public class MySQLUploader {
 
     /**
      * Gets whether an error occurred while accessing the MySQL database
-     *
      * @return whether an error occurred
      */
     public boolean isErrorWhileUploading() {
@@ -73,26 +67,18 @@ public class MySQLUploader {
 
     /**
      * Downloads the specified MySQL database with the specified name into a folder for the specified database type.
-     *
-     * @param name
-     *         the name of the MySQL database
-     * @param type
-     *         the type of database (ex. users, purchases)
+     * @param name the name of the MySQL database
+     * @param type the type of database (ex. users, purchases)
      */
     public void downloadDatabase(String name, String type) {
         downloadDatabase(name, type, Collections.emptyList());
     }
 
     /**
-     * Downloads the specified MySQL database with the specified name into a folder for the specified database type,
-     * excluding the specified tables.
-     *
-     * @param name
-     *         the name of the MySQL database
-     * @param type
-     *         the type of database (ex. users, purchases)
-     * @param blacklist
-     *         a list of tables to not include
+     * Downloads the specified MySQL database with the specified name into a folder for the specified database type, excluding the specified tables.
+     * @param name the name of the MySQL database
+     * @param type the type of database (ex. users, purchases)
+     * @param blacklist a list of tables to not include
      */
     public void downloadDatabase(String name, String type, List<String> blacklist) {
         String connectionUrl = "jdbc:mysql://" + host + ":" + port + "/" + name
@@ -127,9 +113,7 @@ public class MySQLUploader {
 
     /**
      * Gets the names of all the tables in the remote database.
-     *
-     * @param name
-     *         the database's name
+     * @param name the database's name
      * @return a list of the table names
      * @throws SQLException
      */
@@ -138,7 +122,7 @@ public class MySQLUploader {
         List<String> table = new ArrayList<>();
         ResultSet rs;
         rs = stmt.executeQuery("SHOW TABLE STATUS FROM `" + name + "`;");
-        while (rs.next()) {
+        while ( rs.next() ) {
             table.add(rs.getString("Name"));
         }
         return table;
@@ -146,17 +130,14 @@ public class MySQLUploader {
 
     /**
      * Generate the SQL insert statement needed to create an empty table locally with the specified name.
-     *
-     * @param sql
-     *         where to write the output to
-     * @param name
-     *         the table's name
+     * @param sql where to write the output to
+     * @param name the table's name
      * @throws SQLException
      */
     private void getTableInsertStatement(OutputStreamWriter sql, String name) throws SQLException, IOException {
         ResultSet rs;
         rs = stmt.executeQuery("SHOW CREATE TABLE " + "`" + name + "`;");
-        while (rs.next()) {
+        while ( rs.next() ) {
             String qtbl = rs.getString(1);
             String query = rs.getString(2);
             sql.append("\n\n--");
@@ -170,26 +151,23 @@ public class MySQLUploader {
 
     }
 
+
     /**
      * Generates the SQL insert statements needed to copy all of the specified remote table's data to the local table.
-     *
-     * @param sql
-     *         where to write the output to
-     * @param name
-     *         the table's name
-     * @throws SQLException
-     *         exception
+     * @param sql where to write the output to
+     * @param name the table's name
+     * @throws SQLException exception
      */
     private void getDataInsertStatement(OutputStreamWriter sql, String name) throws SQLException, IOException {
         ResultSet rs = stmt.executeQuery("SELECT * FROM " + "`" + name + "`;");
-        // move to the last row to get max rows returned
+        //move to the last row to get max rows returned
         rs.last();
         int rowCount = rs.getRow();
-        if (rowCount <= 0) {
+        if(rowCount <= 0) {
             return;
         }
         sql.append("\n--").append("\n-- Inserts of ").append(name).append("\n--\n\n");
-        // temporarily disable foreign key constraint
+        //temporarily disable foreign key constraint
         sql.append("\n/*!40000 ALTER TABLE `").append(name).append("` DISABLE KEYS */;\n");
         sql.append("\n--\n")
                 .append(SQL_START_PATTERN).append(" table insert : ").append(name)
@@ -197,26 +175,26 @@ public class MySQLUploader {
         sql.append("INSERT INTO `").append(name).append("` (");
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
-        // generate the column names that are present
-        // in the returned result set
-        // at this point the insert is INSERT INTO (`col1`, `col2`, ...)
-        for (int i = 0; i < columnCount; i++) {
+        //generate the column names that are present
+        //in the returned result set
+        //at this point the insert is INSERT INTO (`col1`, `col2`, ...)
+        for(int i = 0; i < columnCount; i++) {
             if (i > 0) {
                 sql.append(", ");
             }
             sql.append("`");
-            sql.append(metaData.getColumnName(i + 1));
+            sql.append(metaData.getColumnName( i + 1));
             sql.append("`");
         }
         sql.append(") VALUES \n");
-        // now we're going to build the values for data insertion.
+        //now we're going to build the values for data insertion.
         rs.beforeFirst();
-        while (rs.next()) {
+        while(rs.next()) {
             if (!rs.isFirst()) {
                 sql.append(",\n");
             }
             sql.append("(");
-            for (int i = 0; i < columnCount; i++) {
+            for(int i = 0; i < columnCount; i++) {
                 int columnType = metaData.getColumnType(i + 1);
                 int columnIndex = i + 1;
                 if (i > 0) {
@@ -267,47 +245,40 @@ public class MySQLUploader {
             }
             sql.append(")");
         }
-        // now that we are done processing the entire row,
-        // let's add the terminator.
+        //now that we are done processing the entire row,
+        //let's add the terminator.
         sql.append(";");
         sql.append("\n--\n")
                 .append(SQL_END_PATTERN).append(" table insert : ").append(name)
                 .append("\n--\n");
-        // enable FK constraint
+        //enable FK constraint
         sql.append("\n/*!40000 ALTER TABLE `").append(name).append("` ENABLE KEYS */;\n");
     }
 
     /**
-     * Generates the SQL insert statements needed to recreate the specified remote database locally, excluding the
-     * specified tables.
-     *
-     * @param sql
-     *         where to write the output to
-     * @param name
-     *         the database's name
-     * @param blacklist
-     *         a list of tables to not include
-     * @throws SQLException
-     *         exception
+     * Generates the SQL insert statements needed to recreate the specified remote database locally, excluding the specified tables.
+     * @param sql where to write the output to
+     * @param name the database's name
+     * @param blacklist a list of tables to not include
+     * @throws SQLException exception
      */
-    private void getInsertStatements(@NotNull OutputStreamWriter sql, String name, List<String> blacklist)
-            throws SQLException, IOException {
+    private void getInsertStatements(@NotNull OutputStreamWriter sql, String name, List<String> blacklist) throws SQLException, IOException {
         sql.append("--");
         sql.append("\n-- Generated by DriveBackupV2");
         sql.append("\n-- http://dev.bukkit.org/projects/drivebackupv2");
         sql.append("\n-- Date: ").append(new SimpleDateFormat("h:mm M/d/yyyy").format(new Date()));
         sql.append("\n--");
-        // these declarations are extracted from HeidiSQL
+        //these declarations are extracted from HeidiSQL
         sql.append("\n\n/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;")
                 .append("\n/*!40101 SET NAMES utf8 */;")
                 .append("\n/*!50503 SET NAMES utf8mb4 */;")
                 .append("\n/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;")
                 .append("\n/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;");
-        // get the tables that are in the database
+        //get the tables that are in the database
         List<String> tables = getAllTables(name);
-        // for every table, get the table creation and data
+        //for every table, get the table creation and data
         // insert statement.
-        for (String table : tables) {
+        for (String table: tables) {
             if (blacklist.contains(table)) {
                 continue;
             }
@@ -325,9 +296,7 @@ public class MySQLUploader {
 
     /**
      * Sets whether an error occurred while accessing the MySQL database
-     *
-     * @param errorOccurredValue
-     *         whether an error occurred
+     * @param errorOccurredValue whether an error occurred
      */
     private void setErrorOccurred(boolean errorOccurredValue) {
         errorOccurred = errorOccurredValue;

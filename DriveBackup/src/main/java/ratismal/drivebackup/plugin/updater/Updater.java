@@ -24,8 +24,7 @@ public class Updater {
     /**
      * Initialize the updater.
      *
-     * @param file
-     *         The plugin jar file
+     * @param file The plugin jar file
      */
     public Updater(File file) {
         plugin = DriveBackup.getInstance();
@@ -36,9 +35,9 @@ public class Updater {
     /**
      * Download the latest plugin jar and save it to the plugins' folder.
      */
-    private void downloadFile() throws IOException {
+    private void downloadFile() throws IOException  {
         File outputPath = new File(updateFolder, "DriveBackupV2.jar.temp");
-        Request request = new Request.Builder().url(UpdateChecker.getLatestDownloadUrl()).build();
+        Request request = new Request.Builder().url(UpdateChecker.getLatestDownloadUrl()).addHeader("Accept", "application/octet-stream").build();
         try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new IOException("Failed to download file: " + response);

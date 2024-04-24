@@ -47,19 +47,17 @@ public class BstatsMetrics {
             }
         }));
         metrics.addCustomChart(new SimplePie("backupMethodEnabled", () -> enabled(
-                config.backupMethods.googleDrive.enabled ||
-                        config.backupMethods.oneDrive.enabled ||
-                        config.backupMethods.dropbox.enabled ||
-                        config.backupMethods.webdav.enabled ||
-                        config.backupMethods.nextcloud.enabled ||
-                        config.backupMethods.ftp.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("googleDriveEnabled", () -> enabled(config.backupMethods.googleDrive.enabled)));
+            config.backupMethods.googleDrive.enabled ||
+            config.backupMethods.oneDrive.enabled ||
+            config.backupMethods.dropbox.enabled ||
+            config.backupMethods.webdav.enabled ||
+            config.backupMethods.nextcloud.enabled ||
+            config.backupMethods.ftp.enabled)));
+        metrics.addCustomChart(new SimplePie("googleDriveEnabled", () -> enabled(config.backupMethods.googleDrive.enabled)));
         metrics.addCustomChart(new SimplePie("oneDriveEnabled", () -> enabled(config.backupMethods.oneDrive.enabled)));
         metrics.addCustomChart(new SimplePie("dropboxEnabled", () -> enabled(config.backupMethods.dropbox.enabled)));
         metrics.addCustomChart(new SimplePie("webdavEnabled", () -> enabled(config.backupMethods.webdav.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("nextcloudEnabled", () -> enabled(config.backupMethods.nextcloud.enabled)));
+        metrics.addCustomChart(new SimplePie("nextcloudEnabled", () -> enabled(config.backupMethods.nextcloud.enabled)));
         metrics.addCustomChart(new SimplePie("ftpEnabled", () -> enabled(config.backupMethods.ftp.enabled)));
         if (config.backupMethods.ftp.enabled) {
             metrics.addCustomChart(new SimplePie("sftpEnabledNew", () -> {
@@ -78,7 +76,7 @@ public class BstatsMetrics {
     }
 
     @NotNull
-    @Contract(pure = true)
+    @Contract (pure = true)
     private String enabled(boolean enabled) {
         if (enabled) {
             return "Enabled";

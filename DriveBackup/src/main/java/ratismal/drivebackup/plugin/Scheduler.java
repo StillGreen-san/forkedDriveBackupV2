@@ -57,16 +57,16 @@ public class Scheduler {
                 ZoneOffset timezone = config.advanced.dateTimezone;
                 for (DayOfWeek day : entry.days) {
                     ZonedDateTime previousOccurrence = ZonedDateTime.now(timezone)
-                            .with(TemporalAdjusters.previous(day))
-                            .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
-                            .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR))
-                            .with(ChronoField.SECOND_OF_MINUTE, 0);
+                        .with(TemporalAdjusters.previous(day))
+                        .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
+                        .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR))
+                        .with(ChronoField.SECOND_OF_MINUTE, 0);
                     ZonedDateTime now = ZonedDateTime.now(timezone);
                     ZonedDateTime nextOccurrence = ZonedDateTime.now(timezone)
-                            .with(TemporalAdjusters.nextOrSame(day))
-                            .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
-                            .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR))
-                            .with(ChronoField.SECOND_OF_MINUTE, 0);
+                        .with(TemporalAdjusters.nextOrSame(day))
+                        .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
+                        .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR))
+                        .with(ChronoField.SECOND_OF_MINUTE, 0);
                     // Adjusts nextOccurrence date when it was set to earlier on the same day,
                     // as the DayOfWeek TemporalAdjuster only takes into account the day,
                     // not the time.
@@ -75,16 +75,16 @@ public class Scheduler {
                         startingOccurrence = startingOccurrence.plusWeeks(1);
                     }
                     backupTasks.add(taskScheduler.runTaskTimerAsynchronously(
-                                    DriveBackup.getInstance(),
-                                    new UploadThread(),
-                                    SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(now, startingOccurrence)),
-                                    SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(previousOccurrence, nextOccurrence)))
-                            .getTaskId());
+                        DriveBackup.getInstance(), 
+                        new UploadThread(),
+                        SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(now, startingOccurrence)),
+                        SchedulerUtil.sToTicks(ChronoUnit.SECONDS.between(previousOccurrence, nextOccurrence))
+                    ).getTaskId());
                     backupDatesList.add(startingOccurrence);
                 }
                 ZonedDateTime scheduleMessageTime = ZonedDateTime.now(timezone)
-                        .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
-                        .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR));
+                    .with(ChronoField.CLOCK_HOUR_OF_DAY, entry.time.get(ChronoField.CLOCK_HOUR_OF_DAY))
+                    .with(ChronoField.MINUTE_OF_HOUR, entry.time.get(ChronoField.MINUTE_OF_HOUR));
                 StringBuilder scheduleDays = new StringBuilder();
                 for (int i = 0; i < entry.days.length; i++) {
                     if (i == entry.days.length - 1) {
@@ -96,34 +96,34 @@ public class Scheduler {
                     scheduleDays.append(dayName);
                 }
                 MessageUtil.Builder()
-                        .mmText(
-                                intl("backups-scheduled"),
-                                "time", scheduleMessageTime.format(DateTimeFormatter.ofPattern("hh:mm a")),
-                                "days", scheduleDays.toString())
-                        .toConsole(true)
-                        .send();
+                    .mmText(
+                        intl("backups-scheduled"), 
+                        "time", scheduleMessageTime.format(DateTimeFormatter.ofPattern("hh:mm a")), 
+                        "days", scheduleDays.toString())
+                    .toConsole(true)
+                    .send();
             }
             if (scheduleDriftTask != -1) {
                 Bukkit.getScheduler().cancelTask(scheduleDriftTask);
             }
             long driftInt = SchedulerUtil.sToTicks(SCHEDULE_DRIFT_CORRECTION_INTERVAL);
-            scheduleDriftTask = taskScheduler
-                    .runTaskTimer(DriveBackup.getInstance(), () -> startBackupThread(), driftInt, driftInt).getTaskId();
+            scheduleDriftTask = taskScheduler.runTaskTimer(DriveBackup.getInstance(), () -> startBackupThread(), driftInt, driftInt).getTaskId();
         } else if (config.backupStorage.delay != -1) {
             SchedulerUtil.cancelTasks(backupTasks);
             if (scheduleDriftTask != -1) {
                 Bukkit.getScheduler().cancelTask(scheduleDriftTask);
             }
             MessageUtil.Builder()
-                    .mmText(intl("backups-interval-scheduled"), "delay", String.valueOf(config.backupStorage.delay))
-                    .toConsole(true)
-                    .send();
+                .mmText(intl("backups-interval-scheduled"), "delay", String.valueOf(config.backupStorage.delay))
+                .toConsole(true)
+                .send();
             long interval = SchedulerUtil.sToTicks(config.backupStorage.delay * 60);
             backupTasks.add(taskScheduler.runTaskTimerAsynchronously(
                     DriveBackup.getInstance(),
                     new UploadThread(),
                     interval,
-                    interval).getTaskId());
+                    interval
+            ).getTaskId());
             UploadThread.updateNextIntervalBackupTime();
         }
     }
@@ -138,7 +138,6 @@ public class Scheduler {
 
     /**
      * Gets a list of Dates representing each time a scheduled backup will occur.
-     *
      * @return the ArrayList of {@code ZonedDateTime} objects
      */
     public static List<ZonedDateTime> getBackupDatesList() {
