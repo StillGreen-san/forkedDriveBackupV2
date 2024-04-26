@@ -1,20 +1,22 @@
 package ratismal.drivebackup.config.configSections;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.config.ConfigParser;
+import ratismal.drivebackup.util.Logger;
 import ratismal.drivebackup.config.configSections.ExternalBackups.ExternalFTPSource.ExternalBackupListEntry;
 import ratismal.drivebackup.config.configSections.ExternalBackups.ExternalMySQLSource.MySQLDatabaseBackup;
 import ratismal.drivebackup.util.LocalDateTimeFormatter;
-import ratismal.drivebackup.util.Logger;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class ExternalBackups {
     public static class ExternalBackupSource {
@@ -24,12 +26,7 @@ public class ExternalBackups {
         public final String password;
         public final LocalDateTimeFormatter format;
 
-        private ExternalBackupSource(
-                String hostname,
-                int port,
-                String username,
-                String password,
-                LocalDateTimeFormatter formatter) {
+        private ExternalBackupSource(String hostname, int port, String username, String password, LocalDateTimeFormatter formatter) {
             this.hostname = hostname;
             this.port = port;
             this.username = username;
@@ -57,17 +54,18 @@ public class ExternalBackups {
         public final ExternalBackupListEntry[] backupList;
 
         private ExternalFTPSource(
-                String hostname,
-                int port,
-                String username,
-                String password,
-                LocalDateTimeFormatter formatter,
-                boolean sftp,
-                boolean ftps,
-                String publicKey,
-                String passphrase,
-                String baseDirectory,
-                ExternalBackupListEntry[] backupList) {
+            String hostname, 
+            int port, 
+            String username, 
+            String password, 
+            LocalDateTimeFormatter formatter,
+            boolean sftp,
+            boolean ftps,
+            String publicKey, 
+            String passphrase, 
+            String baseDirectory, 
+            ExternalBackupListEntry[] backupList
+            ) {
             super(hostname, port, username, password, formatter);
 
             this.sftp = sftp;
@@ -94,13 +92,14 @@ public class ExternalBackups {
         public final MySQLDatabaseBackup[] databaseList;
 
         private ExternalMySQLSource(
-                String hostname,
-                int port,
-                String username,
-                String password,
-                LocalDateTimeFormatter formatter,
-                boolean ssl,
-                MySQLDatabaseBackup[] databaseList) {
+            String hostname, 
+            int port, 
+            String username, 
+            String password, 
+            LocalDateTimeFormatter formatter,
+            boolean ssl, 
+            MySQLDatabaseBackup[] databaseList
+            ) {
             super(hostname, port, username, password, formatter);
 
             this.ssl = ssl;
@@ -110,19 +109,21 @@ public class ExternalBackups {
 
     public final ExternalBackupSource[] sources;
 
-    private ExternalBackups(ExternalBackupSource[] sources) {
+    private ExternalBackups(
+        ExternalBackupSource[] sources
+        ) {
 
         this.sources = sources;
     }
 
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract ("_, _ -> new")
     public static ExternalBackups parse(@NotNull FileConfiguration config, Logger logger) {
         List<Map<?, ?>> rawList = config.getMapList("external-backup-list");
         ArrayList<ExternalBackupSource> list = new ArrayList<>();
         for (Map<?, ?> rawListEntry : rawList) {
             String entryIndex = String.valueOf(rawList.indexOf(rawListEntry) + 1);
-            String[] validTypes = { "ftpServer", "ftpsServer", "sftpServer", "mysqlDatabase" };
+            String[] validTypes = {"ftpServer", "ftpsServer", "sftpServer", "mysqlDatabase"};
             String type;
             try {
                 type = (String) rawListEntry.get("type");
@@ -203,36 +204,36 @@ public class ExternalBackups {
                         try {
                             path = ConfigParser.verifyPath((String) rawBackupListEntry.get("path"));
                         } catch (IllegalArgumentException | ClassCastException e) {
-                            logger.log(
-                                    intl("external-backup-list-path-invalid"), "entry-backup", entryBackupIndex);
+                            logger.log(intl("external-backup-list-path-invalid"), "entry-backup", entryBackupIndex);
                             continue;
                         }
                         String[] blacklist = new String[0];
                         if (rawBackupListEntry.containsKey("blacklist")) {
                             try {
-                                blacklist =
-                                        ((List<String>) rawBackupListEntry.get("blacklist")).toArray(new String[0]);
+                                blacklist = ((List<String>) rawBackupListEntry.get("blacklist")).toArray(new String[0]);
                             } catch (ArrayStoreException | ClassCastException e) {
-                                logger.log(
-                                        intl("external-backup-list-blacklist-invalid"),
-                                        "entry-backup",
-                                        entryBackupIndex);
+                                logger.log(intl("external-backup-list-blacklist-invalid"), "entry-backup", entryBackupIndex);
                             }
                         }
-                        backupList.add(new ExternalBackupListEntry(path, blacklist));
+                        backupList.add(
+                            new ExternalBackupListEntry(path, blacklist)
+                        );
                     }
-                    list.add(new ExternalFTPSource(
-                            hostname,
-                            port,
-                            username,
-                            password,
+                    list.add(
+                        new ExternalFTPSource(
+                            hostname, 
+                            port, 
+                            username, 
+                            password, 
                             formatter,
                             type.equals("sftpServer"),
                             type.equals("ftpsServer"),
                             publicKey,
                             passphrase,
                             baseDirectory,
-                            backupList.toArray(new ExternalBackupListEntry[0])));
+                            backupList.toArray(new ExternalBackupListEntry[0])
+                            )
+                        );
                     break;
                 case "mysqlDatabase":
                     boolean ssl = false;
@@ -250,46 +251,42 @@ public class ExternalBackups {
                         continue;
                     }
                     List<MySQLDatabaseBackup> databaseList = new ArrayList<>();
-                    for (Map<?, ?> rawDatabaseListEntry : rawDatabaseList) {
-                        String entryDatabaseIndex =
-                                String.valueOf(rawDatabaseList.indexOf(rawDatabaseListEntry) + 1);
+                    for (Map<?, ?> rawDatabaseListEntry : rawDatabaseList) { 
+                        String entryDatabaseIndex = String.valueOf(rawDatabaseList.indexOf(rawDatabaseListEntry) + 1);
                         String name;
                         try {
                             name = (String) rawDatabaseListEntry.get("name");
                         } catch (ClassCastException e) {
-                            logger.log(
-                                    intl("external-database-list-name-invalid"),
-                                    "entry-database",
-                                    entryDatabaseIndex);
+                            logger.log(intl("external-database-list-name-invalid"), "entry-database", entryDatabaseIndex);
                             continue;
                         }
                         String[] blacklist = new String[0];
                         if (rawDatabaseListEntry.containsKey("blacklist")) {
                             try {
-                                blacklist =
-                                        ((List<String>) rawDatabaseListEntry.get("blacklist")).toArray(new String[0]);
+                                blacklist = ((List<String>) rawDatabaseListEntry.get("blacklist")).toArray(new String[0]);
                             } catch (ArrayStoreException | ClassCastException e) {
-                                logger.log(
-                                        intl("external-database-list-blacklist-invalid"),
-                                        "entry-database",
-                                        entryDatabaseIndex);
+                                logger.log(intl("external-database-list-blacklist-invalid"), "entry-database", entryDatabaseIndex);
                             }
                         }
                         databaseList.add(new MySQLDatabaseBackup(name, blacklist));
                     }
-                    list.add(new ExternalMySQLSource(
-                            hostname,
-                            port,
-                            username,
-                            password,
-                            formatter,
-                            ssl,
-                            databaseList.toArray(new MySQLDatabaseBackup[0])));
+                    list.add(
+                        new ExternalMySQLSource(
+                            hostname, 
+                            port, 
+                            username, 
+                            password, 
+                            formatter, 
+                            ssl, 
+                            databaseList.toArray(new MySQLDatabaseBackup[0]))
+                    );
                     break;
-                default:
+                default: 
                     // Should never get here
             }
         }
-        return new ExternalBackups(list.toArray(new ExternalBackupSource[0]));
+        return new ExternalBackups(
+            list.toArray(new ExternalBackupSource[0])
+            );
     }
 }

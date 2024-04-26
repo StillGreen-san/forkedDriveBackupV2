@@ -1,7 +1,5 @@
 package ratismal.drivebackup.config.configSections;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -10,21 +8,23 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import ratismal.drivebackup.util.Logger;
 import ratismal.drivebackup.config.configSections.BackupList.BackupListEntry.BackupLocation;
 import ratismal.drivebackup.util.FileUtil;
 import ratismal.drivebackup.util.LocalDateTimeFormatter;
-import ratismal.drivebackup.util.Logger;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class BackupList {
-
+    
     public static final String ENTRY = "entry";
-
+    
     public static class BackupListEntry {
         public interface BackupLocation {
             List<Path> getPaths();
-
             String toString();
         }
 
@@ -64,12 +64,13 @@ public class BackupList {
         public final LocalDateTimeFormatter formatter;
         public final boolean create;
         public final String[] blacklist;
-
+        
         public BackupListEntry(
-                BackupLocation location,
-                LocalDateTimeFormatter formatter,
-                boolean create,
-                String[] blacklist) {
+            BackupLocation location,
+            LocalDateTimeFormatter formatter, 
+            boolean create, 
+            String[] blacklist
+            ) {
 
             this.location = location;
             this.formatter = formatter;
@@ -80,13 +81,15 @@ public class BackupList {
 
     public final BackupListEntry[] list;
 
-    public BackupList(BackupListEntry[] list) {
+    public BackupList(
+        BackupListEntry[] list
+        ) {
 
         this.list = list;
     }
 
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract ("_, _ -> new")
     public static BackupList parse(@NotNull FileConfiguration config, Logger logger) {
         List<Map<?, ?>> rawList = config.getMapList("backup-list");
         ArrayList<BackupListEntry> list = new ArrayList<>();

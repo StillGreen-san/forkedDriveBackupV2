@@ -6,22 +6,21 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.constants.Permission;
+import ratismal.drivebackup.handler.commandHandler.BasicCommands;
 
 public final class PermissionHandler {
-
+    
     private PermissionHandler() {
         throw new IllegalStateException("Utility class");
     }
-
+    
     /**
      * Checks if the specified player has the specified permission
-     *
-     * @param player
-     *         the player
-     * @param permission
-     *         the permission
+     * @param player the player
+     * @param permission the permission
      * @return whether they have permissions
      */
     public static boolean hasPerm(@NotNull CommandSender player, Permission permission) {
@@ -30,9 +29,7 @@ public final class PermissionHandler {
 
     /**
      * Returns a list of players with the specified permission
-     *
-     * @param permission
-     *         the permission, as a {@code String}
+     * @param permission the permission, as a {@code String}
      * @return the list of players
      */
     @NotNull

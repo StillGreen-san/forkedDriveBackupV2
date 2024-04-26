@@ -1,13 +1,13 @@
 package ratismal.drivebackup.uploaders.webdav;
 
-import com.github.sardine.impl.SardineException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.UUID;
+
+import com.github.sardine.impl.SardineException;
 
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.UploadThread.UploadLogger;
@@ -65,12 +65,7 @@ public class NextcloudUploader extends WebDAVUploader {
             try (FileInputStream _fis = new FileInputStream(file)) {
                 ChunkedFileInputStream fis = new ChunkedFileInputStream(chunksize, _fis);
                 do {
-                    sardine.put(
-                            tempdir + String.format("/%020d", fis.getCurrentOffset()),
-                            fis,
-                            (String) null,
-                            true,
-                            fis.available());
+                    sardine.put(tempdir + String.format("/%020d", fis.getCurrentOffset()), fis, (String) null, true, fis.available());
                 } while (fis.next());
                 try {
                     sardine.move(tempdir + "/.file", target.toString());

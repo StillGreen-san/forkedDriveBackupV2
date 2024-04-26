@@ -1,19 +1,6 @@
 package ratismal.drivebackup.uploaders.ftp;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import com.google.api.client.util.Strings;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -27,9 +14,22 @@ import ratismal.drivebackup.uploaders.Uploader;
 import ratismal.drivebackup.util.MessageUtil;
 import ratismal.drivebackup.util.NetUtil;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+
+import static ratismal.drivebackup.config.Localization.intl;
+
 /**
  * Created by Ratismal on 2016-03-30.
  */
+
 public class FTPUploader extends Uploader {
 
     public static final String UPLOADER_NAME = "(S)FTP";
@@ -44,7 +44,6 @@ public class FTPUploader extends Uploader {
 
     /**
      * Returns the configured FTP file separator
-     *
      * @return the separator
      */
     private static String sep() {
@@ -52,8 +51,7 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Creates an instance of the {@code FTPUploader} object using the server credentials specified by the user in the
-     * {@code config.yml}
+     * Creates an instance of the {@code FTPUploader} object using the server credentials specified by the user in the {@code config.yml}
      */
     public FTPUploader(UploadLogger logger, FTPBackupMethod ftp) {
         super(UPLOADER_NAME, "ftp");
@@ -80,55 +78,24 @@ public class FTPUploader extends Uploader {
 
     /**
      * Creates an instance of the {@code FTPUploader} object using the specified credentials
-     *
-     * @param host
-     *         the hostname of the FTP server
-     * @param port
-     *         the port
-     * @param username
-     *         the username
-     * @param password
-     *         the password (leave blank if none)
-     * @param ftps
-     *         whether FTP using SSL
-     * @param sftp
-     *         whether FTP using SSH
-     * @param publicKey
-     *         the path to the SSH public key, relative to the "DriveBackupV2 folder" (leave blank if none)
-     * @param passphrase
-     *         the SSH public key passphrase (leave blank if none)
-     * @param localBaseFolder
-     *         the path to the folder, which all local file paths are relative to.
-     * @param remoteBaseFolder
-     *         the path to the folder, which all remote file paths are relative to.
+     * @param host the hostname of the FTP server
+     * @param port the port
+     * @param username the username
+     * @param password the password (leave blank if none)
+     * @param ftps whether FTP using SSL
+     * @param sftp whether FTP using SSH
+     * @param publicKey the path to the SSH public key, relative to the "DriveBackupV2 folder" (leave blank if none)
+     * @param passphrase the SSH public key passphrase (leave blank if none)
+     * @param localBaseFolder the path to the folder, which all local file paths are relative to.
+     * @param remoteBaseFolder the path to the folder, which all remote file paths are relative to.
      */
-    public FTPUploader(
-            UploadLogger logger,
-            String host,
-            int port,
-            String username,
-            String password,
-            boolean ftps,
-            boolean sftp,
-            String publicKey,
-            String passphrase,
-            String localBaseFolder,
-            String remoteBaseFolder) {
+    public FTPUploader(UploadLogger logger, String host, int port, String username, String password, boolean ftps, boolean sftp, String publicKey, String passphrase, String localBaseFolder, String remoteBaseFolder) {
         super(UPLOADER_NAME, "ftp");
         this.logger = logger;
         try {
             if (sftp) {
                 setId("sftp");
-                sftpClient = new SFTPUploader(
-                        logger,
-                        host,
-                        port,
-                        username,
-                        password,
-                        publicKey,
-                        passphrase,
-                        localBaseFolder,
-                        remoteBaseFolder);
+                sftpClient = new SFTPUploader(logger, host, port, username, password, publicKey, passphrase, localBaseFolder, remoteBaseFolder);
             } else {
                 connect(host, port, username, password, ftps);
                 this.host = host;
@@ -138,26 +105,19 @@ public class FTPUploader extends Uploader {
         } catch (Exception e) {
             MessageUtil.sendConsoleException(e);
             setErrorOccurred(true);
-        }
+        }        
     }
 
     /**
      * Authenticates with a server via FTP
-     *
-     * @param host
-     *         the hostname of the FTP server
-     * @param port
-     *         the port
-     * @param username
-     *         the username
-     * @param password
-     *         the password (leave blank if none)
-     * @param ftps
-     *         whether FTP using SSL
+     * @param host the hostname of the FTP server
+     * @param port the port
+     * @param username the username
+     * @param password the password (leave blank if none)
+     * @param ftps whether FTP using SSL
      * @throws Exception
      */
-    private void connect(String host, int port, String username, String password, boolean ftps)
-            throws Exception {
+    private void connect(String host, int port, String username, String password, boolean ftps) throws Exception {
         ftpClient = new FTPClient();
         if (ftps) {
             setId("ftps");
@@ -175,7 +135,7 @@ public class FTPUploader extends Uploader {
         ftpClient.setListHiddenFiles(false);
         initialRemoteFolder = ftpClient.printWorkingDirectory();
     }
-
+    
     @Override
     public boolean isAuthenticated() {
         if (sftpClient != null) {
@@ -203,9 +163,7 @@ public class FTPUploader extends Uploader {
 
     /**
      * Tests the connection to the (S)FTP server by connecting and uploading a small file.
-     *
-     * @param testFile
-     *         the file to upload
+     * @param testFile the file to upload
      */
     public void test(File testFile) {
         try {
@@ -229,15 +187,12 @@ public class FTPUploader extends Uploader {
 
     /**
      * Uploads the specified file to the (S)FTP server inside a folder for the specified file type.
-     *
-     * @param file
-     *         the file
-     * @param type
-     *         the type of file (ex. plugins, world)
+     * @param file the file
+     * @param type the type of file (ex. plugins, world)
      */
     public void uploadFile(File file, String type) {
         try {
-            type = type.replace(".." + sep(), "");
+            type = type.replace(".."  + sep(), "");
             if (sftpClient != null) {
                 sftpClient.uploadFile(file, type);
                 return;
@@ -263,11 +218,8 @@ public class FTPUploader extends Uploader {
 
     /**
      * Downloads the specifed file from the (S)FTP server into a folder for the specified file type.
-     *
-     * @param filePath
-     *         the path of the file
-     * @param type
-     *         the type of file (ex. plugins, world)
+     * @param filePath the path of the file
+     * @param type the type of file (ex. plugins, world)
      */
     public void downloadFile(String filePath, String type) {
         try {
@@ -281,8 +233,7 @@ public class FTPUploader extends Uploader {
             if (!outputFile.exists()) {
                 outputFile.mkdirs();
             }
-            OutputStream outputStream = Files.newOutputStream(
-                    Paths.get(_localBaseFolder + "/" + type + "/" + new File(filePath).getName()));
+            OutputStream outputStream = Files.newOutputStream(Paths.get(_localBaseFolder + "/" + type + "/" + new File(filePath).getName()));
             ftpClient.retrieveFile(filePath, outputStream);
             outputStream.flush();
             outputStream.close();
@@ -294,9 +245,7 @@ public class FTPUploader extends Uploader {
 
     /**
      * Returns a list of the paths of the files inside the specified folder and subfolders.
-     *
-     * @param folderPath
-     *         the path of the folder
+     * @param folderPath the path of the folder
      * @return the list of file paths
      */
     public ArrayList<String> getFiles(String folderPath) {
@@ -311,8 +260,7 @@ public class FTPUploader extends Uploader {
             for (FTPFile file : ftpClient.mlistDir()) {
                 if (file.isDirectory()) {
                     // file.getName() = file path
-                    filePaths.addAll(
-                            prependToAll(getFiles(file.getName()), new File(file.getName()).getName() + sep()));
+                    filePaths.addAll(prependToAll(getFiles(file.getName()), new File(file.getName()).getName() + sep()));
                 } else {
                     filePaths.add(file.getName());
                 }
@@ -325,13 +273,10 @@ public class FTPUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file
-     * type.
+     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file type.
      * <p>
      * The number of files to retain is specified by the user in the {@code config.yml}
-     *
-     * @param type
-     *         the type of file (ex. plugins, world)
+     * @param type the type of file (ex. plugins, world)
      * @throws Exception
      */
     private void pruneBackups(String type) throws Exception {
@@ -342,13 +287,10 @@ public class FTPUploader extends Uploader {
         TreeMap<Date, FTPFile> files = getZipFiles();
         if (files.size() > fileLimit) {
             logger.info(
-                    intl("backup-method-limit-reached"),
-                    "file-count",
-                    String.valueOf(files.size()),
-                    "upload-method",
-                    getName(),
-                    "file-limit",
-                    String.valueOf(fileLimit));
+                intl("backup-method-limit-reached"), 
+                "file-count", String.valueOf(files.size()),
+                "upload-method", getName(),
+                "file-limit", String.valueOf(fileLimit));
             while (files.size() > fileLimit) {
                 ftpClient.deleteFile(files.firstEntry().getValue().getName());
                 files.remove(files.firstKey());
@@ -358,7 +300,6 @@ public class FTPUploader extends Uploader {
 
     /**
      * Returns a list of ZIP files, and their modification dates inside the current working directory.
-     *
      * @return a map of ZIP files, and their modification dates
      * @throws Exception
      */
@@ -375,9 +316,7 @@ public class FTPUploader extends Uploader {
 
     /**
      * Creates a folder with the specified path inside the current working directory, then enters it.
-     *
-     * @param path
-     *         the relative path of the folder to create
+     * @param path the relative path of the folder to create
      * @throws Exception
      */
     private void createThenEnter(String path) throws Exception {
@@ -389,7 +328,6 @@ public class FTPUploader extends Uploader {
 
     /**
      * Resets the current working directory to what it was when connection to the SFTP server was established.
-     *
      * @throws Exception
      */
     private void resetWorkingDirectory() throws Exception {
@@ -398,14 +336,11 @@ public class FTPUploader extends Uploader {
 
     /**
      * Prepends the specified String to each element in the specified ArrayList.
-     *
-     * @param list
-     *         the ArrayList
-     * @param string
-     *         the String
+     * @param list the ArrayList
+     * @param string the String
      * @return the new ArrayList
      */
-    @Contract("_, _ -> param1")
+    @Contract ("_, _ -> param1")
     private static ArrayList<String> prependToAll(@NotNull ArrayList<String> list, String string) {
         for (int i = 0; i < list.size(); i++) {
             list.set(i, string + list.get(i));

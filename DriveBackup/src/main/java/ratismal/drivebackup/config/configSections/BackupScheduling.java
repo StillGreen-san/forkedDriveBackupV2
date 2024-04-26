@@ -1,7 +1,5 @@
 package ratismal.drivebackup.config.configSections;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import java.time.DayOfWeek;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
@@ -12,10 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.configuration.file.FileConfiguration;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.util.Logger;
 import ratismal.drivebackup.util.SchedulerUtil;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class BackupScheduling {
     public static class BackupScheduleEntry {
@@ -31,14 +32,17 @@ public class BackupScheduling {
     public final boolean enabled;
     public final BackupScheduleEntry[] schedule;
 
-    public BackupScheduling(boolean enabled, BackupScheduleEntry[] schedule) {
+    public BackupScheduling(
+        boolean enabled, 
+        BackupScheduleEntry[] schedule
+        ) {
 
         this.enabled = enabled;
         this.schedule = schedule;
     }
 
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract ("_, _ -> new")
     public static BackupScheduling parse(@NotNull FileConfiguration config, Logger logger) {
         boolean enabled = config.getBoolean("scheduled-backups");
         List<Map<?, ?>> rawSchedule = config.getMapList("backup-schedule-list");
@@ -87,12 +91,18 @@ public class BackupScheduling {
                 logger.log(intl("backup-schedule-time-invalid"), "entry", entryIndex);
                 continue;
             }
-            schedule.add(new BackupScheduling.BackupScheduleEntry(days.toArray(new DayOfWeek[0]), time));
+            schedule.add(new BackupScheduling.BackupScheduleEntry(
+                days.toArray(new DayOfWeek[0]),
+                time
+                ));
         }
         if (rawSchedule.isEmpty() && enabled) {
             logger.log(intl("backup-schedule-empty"));
             enabled = false;
         }
-        return new BackupScheduling(enabled, schedule.toArray(new BackupScheduleEntry[0]));
+        return new BackupScheduling(
+            enabled, 
+            schedule.toArray(new BackupScheduleEntry[0])
+            );
     }
 }

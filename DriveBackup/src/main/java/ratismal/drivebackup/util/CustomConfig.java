@@ -7,15 +7,18 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
+import com.google.common.base.Charsets;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import ratismal.drivebackup.plugin.DriveBackup;
 
 public class CustomConfig {
     private String configName;
     private File configFile;
     private FileConfiguration config;
-
+    
     public CustomConfig(String configName) {
         this.configName = configName;
     }
@@ -27,8 +30,7 @@ public class CustomConfig {
         if (defConfigStream == null) {
             return;
         }
-        config.setDefaults(YamlConfiguration.loadConfiguration(
-                new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
+        config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, StandardCharsets.UTF_8)));
     }
 
     public FileConfiguration getConfig() {
@@ -52,7 +54,7 @@ public class CustomConfig {
         if (configFile == null) {
             configFile = new File(instance.getDataFolder(), configName);
         }
-        if (!configFile.exists()) {
+        if (!configFile.exists()) {            
             instance.saveResource(configName, false);
         }
     }

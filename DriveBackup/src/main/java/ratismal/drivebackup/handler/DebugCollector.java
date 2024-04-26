@@ -1,20 +1,20 @@
 package ratismal.drivebackup.handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.net.UnknownHostException;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 import ratismal.drivebackup.config.ConfigParser;
 import ratismal.drivebackup.config.ConfigParser.Config;
 import ratismal.drivebackup.config.configSections.BackupList;
@@ -39,20 +39,20 @@ public class DebugCollector {
         this.plugins = new ArrayList<>();
         this.ramInfo = new RamInfo();
         for (Plugin pinfo : plugin.getServer().getPluginManager().getPlugins()) {
-            this.plugins.add(new PluginInfo(
-                    pinfo.getDescription().getName(),
-                    pinfo.getDescription().getVersion(),
-                    pinfo.getDescription().getMain(),
-                    pinfo.getDescription().getAuthors()));
+            this.plugins.add(new PluginInfo(pinfo.getDescription().getName(), pinfo.getDescription().getVersion(), pinfo.getDescription().getMain(), pinfo.getDescription().getAuthors()));
         }
     }
 
     public String publish(DriveBackup plugin) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonInString = gson.toJson(this);
-        RequestBody formBody = new FormBody.Builder().add("content", jsonInString).build();
-        Request request =
-                new Request.Builder().url(PASTEBIN_UPLOAD_URL).post(formBody).build();
+        RequestBody formBody = new FormBody.Builder()
+            .add("content", jsonInString)
+            .build();
+        Request request = new Request.Builder()
+            .url(PASTEBIN_UPLOAD_URL)
+            .post(formBody)
+            .build();
         try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 throw new Exception("Unexpected code " + response);
@@ -72,7 +72,6 @@ public class DebugCollector {
         private final String version;
         private final String main;
         private final List<String> authors;
-
         private PluginInfo(String name2, String version2, String main2, List<String> authors2) {
             this.name = name2;
             this.version = version2;

@@ -1,16 +1,18 @@
 package ratismal.drivebackup.plugin;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.config.ConfigParser;
 import ratismal.drivebackup.config.ConfigParser.Config;
 import ratismal.drivebackup.util.MessageUtil;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class BstatsMetrics {
     private static final int METRICS_ID = 7537;
@@ -44,26 +46,19 @@ public class BstatsMetrics {
                 return "Not Enabled";
             }
         }));
-        metrics.addCustomChart(new SimplePie(
-                "backupMethodEnabled",
-                () -> enabled(config.backupMethods.googleDrive.enabled
-                        || config.backupMethods.oneDrive.enabled
-                        || config.backupMethods.dropbox.enabled
-                        || config.backupMethods.webdav.enabled
-                        || config.backupMethods.nextcloud.enabled
-                        || config.backupMethods.ftp.enabled)));
-        metrics.addCustomChart(new SimplePie(
-                "googleDriveEnabled", () -> enabled(config.backupMethods.googleDrive.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("oneDriveEnabled", () -> enabled(config.backupMethods.oneDrive.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("dropboxEnabled", () -> enabled(config.backupMethods.dropbox.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("webdavEnabled", () -> enabled(config.backupMethods.webdav.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("nextcloudEnabled", () -> enabled(config.backupMethods.nextcloud.enabled)));
-        metrics.addCustomChart(
-                new SimplePie("ftpEnabled", () -> enabled(config.backupMethods.ftp.enabled)));
+        metrics.addCustomChart(new SimplePie("backupMethodEnabled", () -> enabled(
+            config.backupMethods.googleDrive.enabled ||
+            config.backupMethods.oneDrive.enabled ||
+            config.backupMethods.dropbox.enabled ||
+            config.backupMethods.webdav.enabled ||
+            config.backupMethods.nextcloud.enabled ||
+            config.backupMethods.ftp.enabled)));
+        metrics.addCustomChart(new SimplePie("googleDriveEnabled", () -> enabled(config.backupMethods.googleDrive.enabled)));
+        metrics.addCustomChart(new SimplePie("oneDriveEnabled", () -> enabled(config.backupMethods.oneDrive.enabled)));
+        metrics.addCustomChart(new SimplePie("dropboxEnabled", () -> enabled(config.backupMethods.dropbox.enabled)));
+        metrics.addCustomChart(new SimplePie("webdavEnabled", () -> enabled(config.backupMethods.webdav.enabled)));
+        metrics.addCustomChart(new SimplePie("nextcloudEnabled", () -> enabled(config.backupMethods.nextcloud.enabled)));
+        metrics.addCustomChart(new SimplePie("ftpEnabled", () -> enabled(config.backupMethods.ftp.enabled)));
         if (config.backupMethods.ftp.enabled) {
             metrics.addCustomChart(new SimplePie("sftpEnabledNew", () -> {
                 if (config.backupMethods.ftp.sftp) {
@@ -81,7 +76,7 @@ public class BstatsMetrics {
     }
 
     @NotNull
-    @Contract(pure = true)
+    @Contract (pure = true)
     private String enabled(boolean enabled) {
         if (enabled) {
             return "Enabled";

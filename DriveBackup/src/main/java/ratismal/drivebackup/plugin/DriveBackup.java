@@ -1,11 +1,5 @@
 package ratismal.drivebackup.plugin;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import okhttp3.OkHttpClient;
 import org.bukkit.command.CommandSender;
@@ -26,6 +20,12 @@ import ratismal.drivebackup.plugin.updater.Updater;
 import ratismal.drivebackup.util.CustomConfig;
 import ratismal.drivebackup.util.HttpLogger;
 import ratismal.drivebackup.util.MessageUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class DriveBackup extends JavaPlugin {
 
@@ -59,25 +59,26 @@ public class DriveBackup extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         httpClient = new OkHttpClient.Builder()
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(3, TimeUnit.MINUTES)
-                .readTimeout(3, TimeUnit.MINUTES)
-                .addInterceptor(new HttpLogger())
-                .build();
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(3, TimeUnit.MINUTES)
+            .readTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(new HttpLogger())
+            .build();
         adventure = BukkitAudiences.create(plugin);
         chatInputPlayers = new ArrayList<>(1);
-        List<CommandSender> configPlayers =
-                PermissionHandler.getPlayersWithPerm(Permission.RELOAD_CONFIG);
+        List<CommandSender> configPlayers = PermissionHandler.getPlayersWithPerm(Permission.RELOAD_CONFIG);
         saveDefaultConfig();
         localizationConfig = new CustomConfig("intl.yml");
         localizationConfig.saveDefaultConfig();
         Localization.set(localizationConfig.getConfig());
-        ConfigMigrator configMigrator =
-                new ConfigMigrator(getConfig(), localizationConfig.getConfig(), configPlayers);
+        ConfigMigrator configMigrator = new ConfigMigrator(getConfig(), localizationConfig.getConfig(), configPlayers);
         configMigrator.migrate();
         config = new ConfigParser(getConfig());
         config.reload(configPlayers);
-        MessageUtil.Builder().to(configPlayers).mmText(intl("config-loaded")).send();
+        MessageUtil.Builder()
+            .to(configPlayers)
+            .mmText(intl("config-loaded"))
+            .send();
         getCommand(CommandHandler.CHAT_KEYWORD).setTabCompleter(new CommandTabComplete());
         getCommand(CommandHandler.CHAT_KEYWORD).setExecutor(new CommandHandler());
         PluginManager pm = getServer().getPluginManager();

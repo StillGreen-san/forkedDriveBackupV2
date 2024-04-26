@@ -1,9 +1,5 @@
 package ratismal.drivebackup.handler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -12,11 +8,16 @@ import ratismal.drivebackup.config.ConfigParser;
 import ratismal.drivebackup.config.configSections.BackupMethods;
 import ratismal.drivebackup.constants.Permission;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by Ratismal on 2016-01-20.
  */
-public class CommandTabComplete implements TabCompleter {
 
+public class CommandTabComplete implements TabCompleter {
+    
     public static boolean hasPerm(CommandSender player, Permission permission) {
         if (player.hasPermission(permission.getPermission())) {
             return true;
@@ -27,19 +28,14 @@ public class CommandTabComplete implements TabCompleter {
     /**
      * Command tab completer
      *
-     * @param player
-     *         Player, who sent command
-     * @param cmd
-     *         Command that was sent
-     * @param label
-     *         Command alias that was used
-     * @param args
-     *         Arguments that followed command
+     * @param player Player, who sent command
+     * @param cmd    Command that was sent
+     * @param label  Command alias that was used
+     * @param args   Arguments that followed command
      * @return String list of possible tab completions
      */
     @Override
-    public List<String> onTabComplete(
-            CommandSender player, @NotNull Command cmd, String label, String[] args) {
+    public List<String> onTabComplete(CommandSender player, @NotNull Command cmd, String label, String[] args) {
         if ("drivebackup".equalsIgnoreCase(cmd.getName())) {
             if (args.length == 1) {
                 List<String> commandList = new ArrayList<>(10);

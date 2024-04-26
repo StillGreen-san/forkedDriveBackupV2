@@ -1,13 +1,13 @@
 package ratismal.drivebackup.util;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import ratismal.drivebackup.config.ConfigParser;
+
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import ratismal.drivebackup.config.ConfigParser;
 
 public final class LocalDateTimeFormatter {
     private static final String FORMAT_KEYWORD = "%FORMAT";
@@ -21,7 +21,7 @@ public final class LocalDateTimeFormatter {
     }
 
     @NotNull
-    @Contract("_ -> new")
+    @Contract ("_ -> new")
     public static LocalDateTimeFormatter ofPattern(String pattern) throws IllegalArgumentException {
         verifyPattern(pattern);
         if (pattern.contains(FORMAT_KEYWORD)) {
@@ -43,9 +43,7 @@ public final class LocalDateTimeFormatter {
 
     @NotNull
     private DateTimeFormatter getFormatter() {
-        return formatter
-                .withLocale(ConfigParser.getConfig().advanced.dateLanguage)
-                .withZone(ConfigParser.getConfig().advanced.dateTimezone);
+        return formatter.withLocale(ConfigParser.getConfig().advanced.dateLanguage).withZone(ConfigParser.getConfig().advanced.dateTimezone);
     }
 
     private static void verifyPattern(String pattern) throws IllegalArgumentException {

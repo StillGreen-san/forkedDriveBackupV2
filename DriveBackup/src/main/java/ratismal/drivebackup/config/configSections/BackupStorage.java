@@ -1,14 +1,15 @@
 package ratismal.drivebackup.config.configSections;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import java.util.zip.Deflater;
 
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.util.Logger;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class BackupStorage {
     public final long delay;
@@ -22,15 +23,16 @@ public class BackupStorage {
     public final String remoteDirectory;
 
     public BackupStorage(
-            long delay,
-            int threadPriority,
-            int keepCount,
-            int localKeepCount,
-            int zipCompression,
-            boolean backupsRequirePlayers,
-            boolean disableSavingDuringBackups,
-            String localDirectory,
-            String remoteDirectory) {
+        long delay, 
+        int threadPriority, 
+        int keepCount, 
+        int localKeepCount,
+        int zipCompression,
+        boolean backupsRequirePlayers,
+        boolean disableSavingDuringBackups,
+        String localDirectory,
+        String remoteDirectory
+        ) {
 
         this.delay = delay;
         this.threadPriority = threadPriority;
@@ -44,7 +46,7 @@ public class BackupStorage {
     }
 
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract ("_, _ -> new")
     public static BackupStorage parse(@NotNull FileConfiguration config, Logger logger) {
         Configuration defaultConfig = config.getDefaults();
         long delay = config.getLong("delay");
@@ -82,15 +84,6 @@ public class BackupStorage {
         boolean disableSavingDuringBackups = config.getBoolean("disable-saving-during-backups");
         String localDirectory = config.getString("local-save-directory");
         String remoteDirectory = config.getString("remote-save-directory");
-        return new BackupStorage(
-                delay,
-                threadPriority,
-                keepCount,
-                localKeepCount,
-                zipCompression,
-                backupsRequirePlayers,
-                disableSavingDuringBackups,
-                localDirectory,
-                remoteDirectory);
+        return new BackupStorage(delay, threadPriority, keepCount, localKeepCount, zipCompression, backupsRequirePlayers, disableSavingDuringBackups, localDirectory, remoteDirectory);
     }
 }

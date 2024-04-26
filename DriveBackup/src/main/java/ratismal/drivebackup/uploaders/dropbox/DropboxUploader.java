@@ -1,14 +1,5 @@
 package ratismal.drivebackup.uploaders.dropbox;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Instant;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
-
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -29,6 +20,15 @@ import ratismal.drivebackup.uploaders.Uploader;
 import ratismal.drivebackup.util.MessageUtil;
 import ratismal.drivebackup.util.NetUtil;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Instant;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
+
+import static ratismal.drivebackup.config.Localization.intl;
+
 public class DropboxUploader extends Uploader {
 
     public static final String UPLOADER_NAME = "Dropbox";
@@ -37,14 +37,11 @@ public class DropboxUploader extends Uploader {
      * Global Dropbox tokens
      */
     private String accessToken = "";
-
     private String refreshToken;
 
     /**
      * Tests the Dropbox account by uploading a small file
-     *
-     * @param testFile
-     *         the file to upload during the test
+     *  @param testFile the file to upload during the test
      */
     public void test(@NotNull java.io.File testFile) {
         try (DataInputStream dis = new DataInputStream(Files.newInputStream(testFile.toPath()))) {
@@ -58,11 +55,11 @@ public class DropboxUploader extends Uploader {
             dropbox_json.put("path", "/" + destination + "/" + testFile.getName());
             String dropbox_arg = dropbox_json.toString();
             Request request = new Request.Builder()
-                    .addHeader("Authorization", "Bearer " + accessToken)
-                    .addHeader("Dropbox-API-Arg", dropbox_arg)
-                    .url("https://content.dropboxapi.com/2/files/upload")
-                    .post(requestBody)
-                    .build();
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .addHeader("Dropbox-API-Arg", dropbox_arg)
+                .url("https://content.dropboxapi.com/2/files/upload")
+                .post(requestBody)
+                .build();
             Response response = DriveBackup.httpClient.newCall(request).execute();
             int statusCode = response.code();
             response.close();
@@ -74,10 +71,10 @@ public class DropboxUploader extends Uploader {
             deleteJson.put("path", "/" + destination + "/" + testFile.getName());
             RequestBody deleteRequestBody = RequestBody.create(deleteJson.toString(), JSON);
             request = new Request.Builder()
-                    .addHeader("Authorization", "Bearer " + accessToken)
-                    .url("https://api.dropboxapi.com/2/files/delete_v2")
-                    .post(deleteRequestBody)
-                    .build();
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .url("https://api.dropboxapi.com/2/files/delete_v2")
+                .post(deleteRequestBody)
+                .build();
             response = DriveBackup.httpClient.newCall(request).execute();
             statusCode = response.code();
             response.close();
@@ -90,20 +87,19 @@ public class DropboxUploader extends Uploader {
             setErrorOccurred(true);
         }
     }
-
-    @Contract(pure = true)
+    
+    @Contract (pure = true)
     @Override
     public boolean isAuthenticated() {
         return !accessToken.isEmpty();
     }
 
     /**
-     * Uploads the specified file to the authenticated user's Dropbox inside a folder for the specified file type.
+     * Uploads the specified file to the authenticated user's Dropbox inside a
+     * folder for the specified file type.
      *
-     * @param file
-     *         the file
-     * @param type
-     *         the type of file (ex. plugins, world)
+     * @param file the file
+     * @param type the type of file (ex. plugins, world)
      */
     public void uploadFile(@NotNull final java.io.File file, @NotNull final String type) {
         String destination = ConfigParser.getConfig().backupStorage.remoteDirectory;
@@ -124,10 +120,10 @@ public class DropboxUploader extends Uploader {
                     dis.readFully(buff);
                     RequestBody requestBody = RequestBody.create(buff, OCTET_STREAM);
                     Request request = new Request.Builder()
-                            .addHeader("Authorization", "Bearer " + accessToken)
-                            .post(requestBody)
-                            .url("https://content.dropboxapi.com/2/files/upload_session/start")
-                            .build();
+                        .addHeader("Authorization", "Bearer " + accessToken)
+                        .post(requestBody)
+                        .url("https://content.dropboxapi.com/2/files/upload_session/start")
+                        .build();
                     Response response = DriveBackup.httpClient.newCall(request).execute();
                     JSONObject parsedResponse = new JSONObject(response.body().string());
                     sessionId = parsedResponse.getString("session_id");
@@ -145,11 +141,11 @@ public class DropboxUploader extends Uploader {
                     dropbox_json.put("cursor", dropbox_cursor);
                     String dropbox_arg = dropbox_json.toString();
                     Request request = new Request.Builder()
-                            .addHeader("Dropbox-API-Arg", dropbox_arg)
-                            .addHeader("Authorization", "Bearer " + accessToken)
-                            .post(requestBody)
-                            .url("https://content.dropboxapi.com/2/files/upload_session/append_v2")
-                            .build();
+                        .addHeader("Dropbox-API-Arg", dropbox_arg)
+                        .addHeader("Authorization", "Bearer " + accessToken)
+                        .post(requestBody)
+                        .url("https://content.dropboxapi.com/2/files/upload_session/append_v2")
+                        .build();
                     Response response = DriveBackup.httpClient.newCall(request).execute();
                     response.close();
                     uploaded += CHUNKED_UPLOAD_CHUNK_SIZE;
@@ -169,27 +165,27 @@ public class DropboxUploader extends Uploader {
                 dropboxJson.put("commit", dropboxCommit);
                 String dropbox_arg = dropboxJson.toString();
                 Request request = new Request.Builder()
-                        .addHeader("Dropbox-API-Arg", dropbox_arg)
-                        .addHeader("Authorization", "Bearer " + accessToken)
-                        .post(requestBody)
-                        .url("https://content.dropboxapi.com/2/files/upload_session/finish")
-                        .build();
+                    .addHeader("Dropbox-API-Arg", dropbox_arg)
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .post(requestBody)
+                    .url("https://content.dropboxapi.com/2/files/upload_session/finish")
+                    .build();
                 Response response = DriveBackup.httpClient.newCall(request).execute();
                 response.close();
             } else {
                 // Single upload
-                byte[] content = new byte[(int) fileSize];
+                byte[] content = new byte[ (int) fileSize];
                 dis.readFully(content);
                 RequestBody requestBody = RequestBody.create(content, OCTET_STREAM);
                 JSONObject dropbox_json = new JSONObject();
                 dropbox_json.put("path", "/" + destination + "/" + folder + "/" + file.getName());
                 String dropbox_arg = dropbox_json.toString();
                 Request request = new Request.Builder()
-                        .addHeader("Authorization", "Bearer " + accessToken)
-                        .addHeader("Dropbox-API-Arg", dropbox_arg)
-                        .url("https://content.dropboxapi.com/2/files/upload")
-                        .post(requestBody)
-                        .build();
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .addHeader("Dropbox-API-Arg", dropbox_arg)
+                    .url("https://content.dropboxapi.com/2/files/upload")
+                    .post(requestBody)
+                    .build();
                 Response response = DriveBackup.httpClient.newCall(request).execute();
                 response.close();
             }
@@ -207,13 +203,13 @@ public class DropboxUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files past the number to retain from the FTP server inside the specified folder for the file
-     * type.
+     * Deletes the oldest files past the number to retain from the FTP server inside
+     * the specified folder for the file type.
      * <p>
-     * The number of files to retain is specified by the user in the {@code config.yml}
-     *
-     * @param type
-     *         the type of file (ex. plugins, world)
+     * The number of files to retain is specified by the user in the
+     * {@code config.yml}
+     * 
+     * @param type the type of file (ex. plugins, world)
      * @throws Exception
      */
     private void pruneBackups(String type) throws Exception {
@@ -227,25 +223,20 @@ public class DropboxUploader extends Uploader {
         }
         TreeMap<Instant, String> files = getZipFiles(destination, type);
         if (files.size() > fileLimit) {
-            logger.info(
-                    intl("backup-method-limit-reached"),
-                    "file-count",
-                    String.valueOf(files.size()),
-                    "upload-method",
-                    getName(),
-                    "file-limit",
-                    String.valueOf(fileLimit));
+            logger.info(intl("backup-method-limit-reached"),
+                "file-count", String.valueOf(files.size()),
+                "upload-method", getName(),
+                "file-limit", String.valueOf(fileLimit));
             while (files.size() > fileLimit) {
                 JSONObject deleteJson = new JSONObject();
-                deleteJson.put(
-                        "path", "/" + destination + "/" + type + "/" + files.firstEntry().getValue());
-                RequestBody deleteRequestBody =
-                        RequestBody.create(deleteJson.toString(), MediaType.parse("application/json"));
+                deleteJson.put("path", "/" + destination + "/" + type + "/" + files.firstEntry().getValue());
+                RequestBody deleteRequestBody = RequestBody.create(deleteJson.toString(),
+                                                        MediaType.parse("application/json"));
                 Request deleteRequest = new Request.Builder()
-                        .addHeader("Authorization", "Bearer " + accessToken)
-                        .url("https://api.dropboxapi.com/2/files/delete_v2")
-                        .post(deleteRequestBody)
-                        .build();
+                    .addHeader("Authorization", "Bearer " + accessToken)
+                    .url("https://api.dropboxapi.com/2/files/delete_v2")
+                    .post(deleteRequestBody)
+                    .build();
                 Response deleteResponse = DriveBackup.httpClient.newCall(deleteRequest).execute();
                 deleteResponse.close();
                 files.remove(files.firstKey());
@@ -255,7 +246,6 @@ public class DropboxUploader extends Uploader {
 
     /**
      * Returns a list of ZIP files, and their modification dates inside the given folder.
-     *
      * @return a map of files, and their modification dates
      * @throws Exception
      */
@@ -264,13 +254,12 @@ public class DropboxUploader extends Uploader {
         TreeMap<Instant, String> files = new TreeMap<>();
         JSONObject json = new JSONObject();
         json.put("path", "/" + destination + "/" + type);
-        RequestBody requestBody =
-                RequestBody.create(json.toString(), MediaType.parse("application/json"));
+        RequestBody requestBody = RequestBody.create(json.toString(), MediaType.parse("application/json"));
         Request request = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + accessToken)
-                .url("https://api.dropboxapi.com/2/files/list_folder")
-                .post(requestBody)
-                .build();
+            .addHeader("Authorization", "Bearer " + accessToken)
+            .url("https://api.dropboxapi.com/2/files/list_folder")
+            .post(requestBody)
+            .build();
         Response response = DriveBackup.httpClient.newCall(request).execute();
         JSONObject parsedResponse = new JSONObject(response.body().string());
         JSONArray resFiles = parsedResponse.getJSONArray("entries");
@@ -305,15 +294,15 @@ public class DropboxUploader extends Uploader {
      */
     private void retrieveNewAccessToken() throws Exception {
         RequestBody requestBody = new FormBody.Builder()
-                .add("client_id", Obfusticate.decrypt(AuthenticationProvider.DROPBOX.getClientId()))
-                .add("client_secret", Obfusticate.decrypt(AuthenticationProvider.DROPBOX.getClientSecret()))
-                .add("refresh_token", refreshToken)
-                .add("grant_type", "refresh_token")
-                .build();
+            .add("client_id", Obfusticate.decrypt(AuthenticationProvider.DROPBOX.getClientId()))
+            .add("client_secret", Obfusticate.decrypt(AuthenticationProvider.DROPBOX.getClientSecret()))
+            .add("refresh_token", refreshToken)
+            .add("grant_type", "refresh_token")
+            .build();
         Request request = new Request.Builder()
-                .url("https://api.dropbox.com/oauth2/token")
-                .post(requestBody)
-                .build();
+            .url("https://api.dropbox.com/oauth2/token")
+            .post(requestBody)
+            .build();
         Response response = DriveBackup.httpClient.newCall(request).execute();
         JSONObject parsedResponse = new JSONObject(response.body().string());
         response.close();

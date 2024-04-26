@@ -1,10 +1,5 @@
 package ratismal.drivebackup.plugin.updater;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
-import java.io.IOException;
-import java.util.NoSuchElementException;
-
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -18,6 +13,11 @@ import ratismal.drivebackup.util.MessageUtil;
 import ratismal.drivebackup.util.NetUtil;
 import ratismal.drivebackup.util.SchedulerUtil;
 import ratismal.drivebackup.util.Version;
+
+import java.io.IOException;
+import java.util.NoSuchElementException;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class UpdateChecker {
 
@@ -36,52 +36,39 @@ public class UpdateChecker {
         DriveBackup plugin = DriveBackup.getInstance();
         UpdateChecker checker = new UpdateChecker();
         if (ConfigParser.getConfig().advanced.updateCheckEnabled) {
-            plugin
-                    .getServer()
-                    .getScheduler()
-                    .runTaskTimerAsynchronously(
-                            plugin,
-                            () -> {
-                                Logger logger = (input, placeholders) ->
-                                        MessageUtil.Builder().mmText(input, placeholders).send();
-                                try {
-                                    if (!hasSentStartMessage) {
-                                        logger.log(intl("update-checker-started"));
-                                        hasSentStartMessage = true;
-                                    }
-                                    // get versions
-                                    currentVersion = checker.getCurrent();
-                                    latestVersion = checker.getLatest();
-                                    // check if the current version is outdated
-                                    if (latestVersion.isAfter(currentVersion)) {
-                                        logger.log(
-                                                intl("update-checker-new-release"),
-                                                "latest-version",
-                                                latestVersion.toString(),
-                                                "current-version",
-                                                currentVersion.toString());
-                                    } else if (currentVersion.isAfter(latestVersion)) {
-                                        logger.log(
-                                                intl("update-checker-unsupported-release"),
-                                                "latest-version",
-                                                latestVersion.toString(),
-                                                "current-version",
-                                                currentVersion.toString());
-                                    }
-                                } catch (Exception e) {
-                                    NetUtil.catchException(e, "api.github.com", logger);
-                                    logger.log(intl("update-checker-failed"));
-                                    MessageUtil.sendConsoleException(e);
-                                }
-                            },
-                            0,
-                            SchedulerUtil.sToTicks(UPDATE_CHECK_INTERVAL));
+            plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+                Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).send();
+                try {
+                    if (!hasSentStartMessage) {
+                        logger.log(intl("update-checker-started"));
+                        hasSentStartMessage = true;
+                    }
+                    //get versions
+                    currentVersion = checker.getCurrent();
+                    latestVersion = checker.getLatest();
+                    //check if the current version is outdated
+                    if (latestVersion.isAfter(currentVersion)) {
+                        logger.log(
+                            intl("update-checker-new-release"),
+                            "latest-version", latestVersion.toString(),
+                            "current-version", currentVersion.toString());
+                    } else if (currentVersion.isAfter(latestVersion)) {
+                        logger.log(
+                            intl("update-checker-unsupported-release"),
+                            "latest-version", latestVersion.toString(),
+                            "current-version", currentVersion.toString());
+                    }
+                } catch (Exception e) {
+                    NetUtil.catchException(e, "api.github.com", logger);
+                    logger.log(intl("update-checker-failed"));
+                    MessageUtil.sendConsoleException(e);
+                }
+            }, 0, SchedulerUtil.sToTicks(UPDATE_CHECK_INTERVAL));
         }
     }
 
     /**
      * Gets whether an update is available for the plugin
-     *
      * @return whether an update is available
      */
     public static boolean isUpdateAvailable() {
@@ -91,26 +78,23 @@ public class UpdateChecker {
         return false;
     }
 
-    @Contract(pure = true)
+    @Contract (pure = true)
     public static String getLatestDownloadUrl() {
         return latestDownloadUrl;
     }
 
     public Version getCurrent() throws Exception {
-        String versionTitle =
-                DriveBackup.getInstance().getDescription().getVersion().split("-")[0];
+        String versionTitle = DriveBackup.getInstance().getDescription().getVersion().split("-")[0];
         return Version.parse(versionTitle);
     }
 
     public Version getLatest() throws Exception {
-        final String LATEST_URL =
-                "https://api.github.com/repos/MaxMaeder/DriveBackupV2/releases/latest";
+        final String LATEST_URL = "https://api.github.com/repos/MaxMaeder/DriveBackupV2/releases/latest";
         Request request = new Request.Builder().url(LATEST_URL).build();
         JSONObject pluginVersions;
         try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
             if (response.code() != 200) {
-                throw new IOException(
-                        "Unexpected response: " + response.code() + " : " + response.message());
+                throw new IOException("Unexpected response: " + response.code() + " : " + response.message());
             }
             ResponseBody body = response.body();
             if (body == null) {
@@ -127,8 +111,7 @@ public class UpdateChecker {
         JSONArray assets;
         try (Response response = DriveBackup.httpClient.newCall(request2).execute()) {
             if (response.code() != 200) {
-                throw new IOException(
-                        "Unexpected response: " + response.code() + " : " + response.message());
+                throw new IOException("Unexpected response: " + response.code() + " : " + response.message());
             }
             ResponseBody body = response.body();
             if (body == null) {

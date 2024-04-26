@@ -5,9 +5,10 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+
 import ratismal.drivebackup.config.ConfigParser.Config;
-import ratismal.drivebackup.plugin.DriveBackup;
 import ratismal.drivebackup.util.Logger;
+import ratismal.drivebackup.plugin.DriveBackup;
 import ratismal.drivebackup.util.MessageUtil;
 
 public class ConfigMigrator {
@@ -15,16 +16,13 @@ public class ConfigMigrator {
 
     // ConfigMigrator is called before localization is parsed, since ConfigMigrator
     // may change the intl file. Therefore, we just hardcode any messages.
-    private static final String MIGRATING_MESSAGE =
-            "Automatically migrating config to version <version>";
+    private static final String MIGRATING_MESSAGE = "Automatically migrating config to version <version>";
 
     private FileConfiguration config;
     private FileConfiguration localizationConfig;
     private List<CommandSender> initiators;
 
-    public ConfigMigrator(
-            FileConfiguration config,
-            FileConfiguration localizationConfig,
+    public ConfigMigrator(FileConfiguration config, FileConfiguration localizationConfig,
             List<CommandSender> initiators) {
         this.config = config;
         this.localizationConfig = localizationConfig;
@@ -32,8 +30,7 @@ public class ConfigMigrator {
     }
 
     public void migrate() {
-        Logger logger = (input, placeholders) ->
-                MessageUtil.Builder().mmText(input, placeholders).to(initiators).send();
+        Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).to(initiators).send();
         if (config.isSet("version") && config.getInt("version") >= Config.VERSION) {
             return;
         }
@@ -75,12 +72,10 @@ public class ConfigMigrator {
     }
 
     /**
-     * Migrates a setting from the specified old path in the config to the new path.
-     *
-     * @param oldPath
-     *         the old path
-     * @param newPath
-     *         the new path
+     * Migrates a setting from the specified old path in the config
+     * to the new path.
+     * @param oldPath the old path
+     * @param newPath the new path
      */
     private void migrate(String oldPath, String newPath) {
         config.set(newPath, config.get(oldPath));
@@ -88,12 +83,10 @@ public class ConfigMigrator {
     }
 
     /**
-     * Migrates a setting from the specified old path in the config to the new path in the localization config.
-     *
-     * @param oldPath
-     *         the old path
-     * @param newPath
-     *         the new path
+     * Migrates a setting from the specified old path in the config
+     * to the new path in the localization config.
+     * @param oldPath the old path
+     * @param newPath the new path
      */
     private void migrateIntl(String oldPath, String newPath) {
         localizationConfig.set(newPath, config.get(oldPath));

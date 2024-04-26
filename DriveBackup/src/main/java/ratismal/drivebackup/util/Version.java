@@ -15,15 +15,15 @@ public class Version {
     }
 
     @NotNull
-    @Contract("_ -> new")
-    public static Version parse(@NotNull String version)
-            throws ArrayIndexOutOfBoundsException, NumberFormatException {
+    @Contract ("_ -> new")
+    public static Version parse(@NotNull String version) throws ArrayIndexOutOfBoundsException, NumberFormatException {
         String[] splitVersion = version.split("\\.");
 
         return new Version(
-                Integer.parseInt(splitVersion[0]),
-                Integer.parseInt(splitVersion[1]),
-                Integer.parseInt(splitVersion[2]));
+            Integer.parseInt(splitVersion[0]), 
+            Integer.parseInt(splitVersion[1]), 
+            Integer.parseInt(splitVersion[2])
+        );
     }
 
     public boolean isAfter(@NotNull Version other) {

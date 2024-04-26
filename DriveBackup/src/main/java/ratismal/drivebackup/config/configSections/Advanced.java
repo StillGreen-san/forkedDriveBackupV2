@@ -1,15 +1,16 @@
 package ratismal.drivebackup.config.configSections;
 
-import static ratismal.drivebackup.config.Localization.intl;
-
 import java.time.DateTimeException;
 import java.time.ZoneOffset;
 import java.util.Locale;
 
 import org.bukkit.configuration.file.FileConfiguration;
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import ratismal.drivebackup.util.Logger;
+
+import static ratismal.drivebackup.config.Localization.intl;
 
 public class Advanced {
     public final boolean metricsEnabled;
@@ -21,14 +22,15 @@ public class Advanced {
     public final String fileSeparator;
 
     public Advanced(
-            boolean metricsEnabled,
-            boolean updateCheckEnabled,
-            boolean suppressErrors,
-            boolean debugEnabled,
-            Locale dateLanguage,
-            ZoneOffset dateTimezone,
-            String fileSeparator) {
-
+        boolean metricsEnabled, 
+        boolean updateCheckEnabled, 
+        boolean suppressErrors,
+        boolean debugEnabled,
+        Locale dateLanguage, 
+        ZoneOffset dateTimezone, 
+        String fileSeparator
+        ) {
+            
         this.metricsEnabled = metricsEnabled;
         this.updateCheckEnabled = updateCheckEnabled;
         this.suppressErrors = suppressErrors;
@@ -39,7 +41,7 @@ public class Advanced {
     }
 
     @NotNull
-    @Contract("_, _ -> new")
+    @Contract ("_, _ -> new")
     public static Advanced parse(@NotNull FileConfiguration config, Logger logger) {
         boolean metrics = config.getBoolean("advanced.metrics");
         boolean updateCheck = config.getBoolean("advanced.update-check");
@@ -49,19 +51,20 @@ public class Advanced {
         ZoneOffset dateTimezone;
         try {
             dateTimezone = ZoneOffset.of(config.getString("advanced.date-timezone"));
-        } catch (DateTimeException e) {
+        } catch(DateTimeException e) {
             logger.log(intl("date-format-invalid"));
-            // Fallback to UTC
+            //Fallback to UTC
             dateTimezone = ZoneOffset.of("Z");
         }
         String fileSeparator = config.getString("advanced.ftp-file-separator");
         return new Advanced(
-                metrics,
-                updateCheck,
-                suppressErrors,
-                debugEnabled,
-                dateLanguage,
-                dateTimezone,
-                fileSeparator);
+            metrics, 
+            updateCheck, 
+            suppressErrors,
+            debugEnabled,
+            dateLanguage,
+            dateTimezone, 
+            fileSeparator
+        );
     }
 }
