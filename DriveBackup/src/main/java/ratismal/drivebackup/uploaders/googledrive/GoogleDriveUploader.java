@@ -47,7 +47,7 @@ import static ratismal.drivebackup.config.Localization.intl;
  */
 
 public class GoogleDriveUploader extends Uploader {
-    
+
     public static final String APPLICATION_VND_GOOGLE_APPS_FOLDER = "application/vnd.google-apps.folder";
     private String refreshToken;
 
@@ -73,7 +73,6 @@ public class GoogleDriveUploader extends Uploader {
      */
     private Drive service;
 
-
     /**
      * Creates an instance of the {@code GoogleDriveUploader} object
      */
@@ -96,15 +95,15 @@ public class GoogleDriveUploader extends Uploader {
      */
     private void retrieveNewAccessToken() throws Exception {
         RequestBody requestBody = new FormBody.Builder()
-            .add("client_id", Obfusticate.decrypt(AuthenticationProvider.GOOGLE_DRIVE.getClientId()))
-            .add("client_secret", Obfusticate.decrypt(AuthenticationProvider.GOOGLE_DRIVE.getClientSecret()))
-            .add("refresh_token", refreshToken)
-            .add("grant_type", "refresh_token")
-            .build();
+                .add("client_id", Obfusticate.decrypt(AuthenticationProvider.GOOGLE_DRIVE.getClientId()))
+                .add("client_secret", Obfusticate.decrypt(AuthenticationProvider.GOOGLE_DRIVE.getClientSecret()))
+                .add("refresh_token", refreshToken)
+                .add("grant_type", "refresh_token")
+                .build();
         Request request = new Request.Builder()
-            .url("https://oauth2.googleapis.com/token")
-            .post(requestBody)
-            .build();
+                .url("https://oauth2.googleapis.com/token")
+                .post(requestBody)
+                .build();
         Response response = DriveBackup.httpClient.newCall(request).execute();
         JSONObject parsedResponse = new JSONObject(response.body().string());
         response.close();
@@ -112,13 +111,13 @@ public class GoogleDriveUploader extends Uploader {
             return;
         }
         service = new Drive.Builder(
-            httpTransport, 
-            JSON_FACTORY, 
-            setTimeout(new Credential(
-                BearerToken.authorizationHeaderAccessMethod())
-                .setAccessToken(parsedResponse.getString("access_token"))))
-            .setApplicationName("DriveBackupV2")
-            .build();
+                httpTransport,
+                JSON_FACTORY,
+                setTimeout(new Credential(
+                        BearerToken.authorizationHeaderAccessMethod())
+                        .setAccessToken(parsedResponse.getString("access_token"))))
+                .setApplicationName("DriveBackupV2")
+                .build();
     }
 
     @Override
@@ -127,12 +126,17 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Sets the connect/read timeouts of the Google Drive Client by implementing {@code HttpRequestInitializer}
-     * @param requestInitializer the default {@code HttpRequestInitializer} provided by the Google Drive Client
-     * @return the modified {@code HttpRequestInitializer} with the connect/read timeouts set 
+     * Sets the connect/read timeouts of the Google Drive Client by implementing
+     * {@code HttpRequestInitializer}
+     *
+     * @param requestInitializer
+     *            the default {@code HttpRequestInitializer} provided by the Google
+     *            Drive Client
+     * @return the modified {@code HttpRequestInitializer} with the connect/read
+     *         timeouts set
      */
     @NotNull
-    @Contract (value = "_ -> new", pure = true)
+    @Contract(value = "_ -> new", pure = true)
     private static HttpRequestInitializer setTimeout(final HttpRequestInitializer requestInitializer) {
         return httpRequest -> {
             requestInitializer.initialize(httpRequest);
@@ -145,7 +149,9 @@ public class GoogleDriveUploader extends Uploader {
 
     /**
      * Tests the Google Drive account by uploading a small file
-     * @param testFile the file to upload during the test
+     *
+     * @param testFile
+     *            the file to upload during the test
      */
     public void test(java.io.File testFile) {
         try {
@@ -176,9 +182,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Uploads the specified file to the authenticated user's Google Drive inside a folder for the specified file type.
-     * @param file the file
-     * @param type the type of file (ex. plugins, world)
+     * Uploads the specified file to the authenticated user's Google Drive inside a
+     * folder for the specified file type.
+     *
+     * @param file
+     *            the file
+     * @param type
+     *            the type of file (ex. plugins, world)
      */
     public void uploadFile(java.io.File file, String type) {
         try {
@@ -238,23 +248,24 @@ public class GoogleDriveUploader extends Uploader {
 
     /**
      * Setup for authenticated user that has access to one or more shared drives.
+     *
      * @throws Exception
      */
     public void setupSharedDrives(CommandSender initiator) throws Exception {
         if (drives != null && !drives.isEmpty()) {
             logger.log(intl("google-pick-shared-drive"));
             logger.log(
-                intl("google-shared-drive-option"),
-                "select-command", "1",
-                "drive-num", "1",
-                "drive-name", intl("default-google-drive-name"));
+                    intl("google-shared-drive-option"),
+                    "select-command", "1",
+                    "drive-num", "1",
+                    "drive-name", intl("default-google-drive-name"));
             int index = 1;
             for (com.google.api.services.drive.model.Drive drive : drives) {
                 logger.log(
-                    intl("google-shared-drive-option"),
-                    "select-command", drive.getId(),
-                    "drive-num", String.valueOf(++index),
-                    "drive-name", drive.getName()); 
+                        intl("google-shared-drive-option"),
+                        "select-command", drive.getId(),
+                        "drive-num", String.valueOf(++index),
+                        "drive-name", drive.getName());
             }
             if (initiator instanceof Player) {
                 Player player = (Player) initiator;
@@ -287,7 +298,7 @@ public class GoogleDriveUploader extends Uploader {
             instance.getConfig().set(idKey, drives.get(Integer.parseInt(input) - 2).getId());
             instance.saveConfig();
             Authenticator.linkSuccess(initiator, getAuthProvider(), logger);
-                        
+
             return;
         }
         // TODO: handle this better
@@ -295,9 +306,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the specified parent folder in the authenticated user's Google Drive.
-     * @param name the name of the folder
-     * @param parent the parent folder
+     * Creates a folder with the specified name in the specified parent folder in
+     * the authenticated user's Google Drive.
+     *
+     * @param name
+     *            the name of the folder
+     * @param parent
+     *            the parent folder
      * @return the created folder
      * @throws Exception
      */
@@ -318,9 +333,13 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the authenticated user's specified Shared Drive.
-     * @param name the name of the folder
-     * @param driveId the parent folder
+     * Creates a folder with the specified name in the authenticated user's
+     * specified Shared Drive.
+     *
+     * @param name
+     *            the name of the folder
+     * @param driveId
+     *            the parent folder
      * @return the created folder
      * @throws Exception
      */
@@ -341,8 +360,11 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Creates a folder with the specified name in the root of the authenticated user's Google Drive.
-     * @param name the name of the folder
+     * Creates a folder with the specified name in the root of the authenticated
+     * user's Google Drive.
+     *
+     * @param name
+     *            the name of the folder
      * @return the created folder
      * @throws Exception
      */
@@ -360,20 +382,25 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the specified Shared Drive of the authenticated user's Google Drive with the specified name.
-     * @param name the name of the folder
-     * @param driveId the ID of the drive to use
+     * Returns the folder in the specified Shared Drive of the authenticated user's
+     * Google Drive with the specified name.
+     *
+     * @param name
+     *            the name of the folder
+     * @param driveId
+     *            the ID of the drive to use
      * @return the folder or {@code null}
      */
     @Nullable
     private File getFolder(String name, String driveId) {
         try {
             Drive.Files.List request = service.files().list()
-                .setDriveId(driveId)
-                .setSupportsAllDrives(true)
-                .setIncludeItemsFromAllDrives(true)
-                .setCorpora("drive")
-                .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and '" + driveId + "' in parents");
+                    .setDriveId(driveId)
+                    .setSupportsAllDrives(true)
+                    .setIncludeItemsFromAllDrives(true)
+                    .setCorpora("drive")
+                    .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and '" + driveId
+                            + "' in parents");
             FileList files = request.execute();
             for (File folderfiles : files.getItems()) {
                 if (folderfiles.getTitle().equals(name)) {
@@ -388,20 +415,25 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the specified parent folder of the authenticated user's Google Drive with the specified name.
-     * @param name the name of the folder
-     * @param parent the parent folder
+     * Returns the folder in the specified parent folder of the authenticated user's
+     * Google Drive with the specified name.
+     *
+     * @param name
+     *            the name of the folder
+     * @param parent
+     *            the parent folder
      * @return the folder or {@code null}
      */
     @Nullable
     private File getFolder(String name, File parent, boolean sharedDrive) {
         try {
             Drive.Files.List request = service.files().list()
-                .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and '" + parent.getId() + "' in parents");
+                    .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and '" + parent.getId()
+                            + "' in parents");
             if (sharedDrive) {
                 request.setSupportsAllDrives(true)
-                .setIncludeItemsFromAllDrives(true)
-                .setCorpora("allDrives");
+                        .setIncludeItemsFromAllDrives(true)
+                        .setCorpora("allDrives");
             }
             FileList files = request.execute();
             for (File folderfiles : files.getItems()) {
@@ -417,16 +449,20 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns the folder in the root of the authenticated user's Google Drive with the specified name.
-     * @param name the name of the folder
+     * Returns the folder in the root of the authenticated user's Google Drive with
+     * the specified name.
+     *
+     * @param name
+     *            the name of the folder
      * @return the folder or {@code null}
      */
     @Nullable
     private File getFolder(String name) {
         try {
             Drive.Files.List request = service.files().list()
-                .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents");
-            FileList files = request.execute();;
+                    .setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and 'root' in parents");
+            FileList files = request.execute();
+            ;
             for (File folderfiles : files.getItems()) {
                 if (folderfiles.getTitle().equals(name)) {
                     return folderfiles;
@@ -440,22 +476,26 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Returns a list of files in the specified folder in the authenticated user's Google Drive, ordered by creation date.
-     * @param folder the folder containing the files
+     * Returns a list of files in the specified folder in the authenticated user's
+     * Google Drive, ordered by creation date.
+     *
+     * @param folder
+     *            the folder containing the files
      * @return a list of files
      * @throws Exception
      */
     @NotNull
     private List<ChildReference> getFiles(@NotNull File folder) throws Exception {
-        //Create a List to store results
+        // Create a List to store results
         List<ChildReference> result = new ArrayList<>();
-        //Set up a request to query all files from all pages.
-        //We are also making sure the files are sorted by created Date.
-        //Oldest at the beginning of List.
-        //Drive.Files.List request = service.files().list().setOrderBy("createdDate");
-        //folder.getId();
+        // Set up a request to query all files from all pages.
+        // We are also making sure the files are sorted by created Date.
+        // Oldest at the beginning of List.
+        // Drive.Files.List request = service.files().list().setOrderBy("createdDate");
+        // folder.getId();
         Drive.Children.List request = service.children().list(folder.getId()).setOrderBy("createdDate");
-        //While there is a page available, request files and add them to the Result List.
+        // While there is a page available, request files and add them to the Result
+        // List.
         do {
             try {
                 ChildList files = request.execute();
@@ -471,10 +511,14 @@ public class GoogleDriveUploader extends Uploader {
     }
 
     /**
-     * Deletes the oldest files in the specified folder past the number to retain from the authenticated user's Google Drive.
+     * Deletes the oldest files in the specified folder past the number to retain
+     * from the authenticated user's Google Drive.
      * <p>
-     * The number of files to retain is specified by the user in the {@code config.yml}
-     * @param folder the folder containing the files
+     * The number of files to retain is specified by the user in the
+     * {@code config.yml}
+     *
+     * @param folder
+     *            the folder containing the files
      * @throws Exception
      */
     private void pruneBackups(File folder) throws Exception {
@@ -485,11 +529,11 @@ public class GoogleDriveUploader extends Uploader {
         List<ChildReference> files = getFiles(folder);
         if (files.size() > fileLimit) {
             logger.info(
-                intl("backup-method-limit-reached"), 
-                "file-count", String.valueOf(files.size()),
-                "upload-method", getName(),
-                "file-limit", String.valueOf(fileLimit));
-            for (Iterator<ChildReference> iterator = files.iterator(); iterator.hasNext(); ) {
+                    intl("backup-method-limit-reached"),
+                    "file-count", String.valueOf(files.size()),
+                    "upload-method", getName(),
+                    "file-limit", String.valueOf(fileLimit));
+            for (Iterator<ChildReference> iterator = files.iterator(); iterator.hasNext();) {
                 if (files.size() == fileLimit) {
                     break;
                 }

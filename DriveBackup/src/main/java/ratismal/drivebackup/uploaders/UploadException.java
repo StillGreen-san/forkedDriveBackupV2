@@ -9,14 +9,15 @@ class UploadException extends Exception {
      * detail message.
      */
     public UploadException() {
-    
+
     }
 
     /**
      * Constructs an {@code UploadException} with the
      * specified detail message.
      *
-     * @param s the detail message.
+     * @param s
+     *            the detail message.
      */
     public UploadException(String s) {
         super(s);

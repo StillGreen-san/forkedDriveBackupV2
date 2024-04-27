@@ -43,20 +43,20 @@ public class UpdateChecker {
                         logger.log(intl("update-checker-started"));
                         hasSentStartMessage = true;
                     }
-                    //get versions
+                    // get versions
                     currentVersion = checker.getCurrent();
                     latestVersion = checker.getLatest();
-                    //check if the current version is outdated
+                    // check if the current version is outdated
                     if (latestVersion.isAfter(currentVersion)) {
                         logger.log(
-                            intl("update-checker-new-release"),
-                            "latest-version", latestVersion.toString(),
-                            "current-version", currentVersion.toString());
+                                intl("update-checker-new-release"),
+                                "latest-version", latestVersion.toString(),
+                                "current-version", currentVersion.toString());
                     } else if (currentVersion.isAfter(latestVersion)) {
                         logger.log(
-                            intl("update-checker-unsupported-release"),
-                            "latest-version", latestVersion.toString(),
-                            "current-version", currentVersion.toString());
+                                intl("update-checker-unsupported-release"),
+                                "latest-version", latestVersion.toString(),
+                                "current-version", currentVersion.toString());
                     }
                 } catch (Exception e) {
                     NetUtil.catchException(e, "api.github.com", logger);
@@ -69,6 +69,7 @@ public class UpdateChecker {
 
     /**
      * Gets whether an update is available for the plugin
+     *
      * @return whether an update is available
      */
     public static boolean isUpdateAvailable() {
@@ -78,7 +79,7 @@ public class UpdateChecker {
         return false;
     }
 
-    @Contract (pure = true)
+    @Contract(pure = true)
     public static String getLatestDownloadUrl() {
         return latestDownloadUrl;
     }

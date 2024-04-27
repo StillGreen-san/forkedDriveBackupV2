@@ -21,7 +21,7 @@ public final class LocalDateTimeFormatter {
     }
 
     @NotNull
-    @Contract ("_ -> new")
+    @Contract("_ -> new")
     public static LocalDateTimeFormatter ofPattern(String pattern) throws IllegalArgumentException {
         verifyPattern(pattern);
         if (pattern.contains(FORMAT_KEYWORD)) {
@@ -43,7 +43,8 @@ public final class LocalDateTimeFormatter {
 
     @NotNull
     private DateTimeFormatter getFormatter() {
-        return formatter.withLocale(ConfigParser.getConfig().advanced.dateLanguage).withZone(ConfigParser.getConfig().advanced.dateTimezone);
+        return formatter.withLocale(ConfigParser.getConfig().advanced.dateLanguage)
+                .withZone(ConfigParser.getConfig().advanced.dateTimezone);
     }
 
     private static void verifyPattern(String pattern) throws IllegalArgumentException {

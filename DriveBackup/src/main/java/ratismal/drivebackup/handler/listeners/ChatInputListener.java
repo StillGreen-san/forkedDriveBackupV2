@@ -26,11 +26,14 @@ public class ChatInputListener implements Listener {
             event.setCancelled(true);
         }
     }
-    
+
     /**
      * Handles input from a player
-     * @param sender the player who sent the input
-     * @param input the input
+     *
+     * @param sender
+     *            the player who sent the input
+     * @param input
+     *            the input
      * @return whether the input was handled
      */
     private static boolean handleInput(CommandSender sender, String input) {

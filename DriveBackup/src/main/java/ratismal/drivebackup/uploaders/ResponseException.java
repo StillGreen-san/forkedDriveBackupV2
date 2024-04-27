@@ -12,7 +12,8 @@ class ResponseException extends Exception {
      * Constructs an {@code ResponseException} with the
      * specified JSON response.
      *
-     * @param j the JSON response.
+     * @param j
+     *            the JSON response.
      */
     public ResponseException(JSONObject j) {
         json = j;
@@ -22,8 +23,10 @@ class ResponseException extends Exception {
      * Constructs an {@code ResponseException} with the
      * specified JSON response and detail message.
      *
-     * @param j the JSON response.
-     * @param s the detail message.
+     * @param j
+     *            the JSON response.
+     * @param s
+     *            the detail message.
      */
     public ResponseException(JSONObject j, String s) {
         super(s);
@@ -32,6 +35,7 @@ class ResponseException extends Exception {
 
     /**
      * Gets the JSON response
+     *
      * @return the JSON response
      */
     public JSONObject getJsonObject() {

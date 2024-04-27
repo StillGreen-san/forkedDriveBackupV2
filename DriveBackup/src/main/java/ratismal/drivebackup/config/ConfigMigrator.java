@@ -30,7 +30,8 @@ public class ConfigMigrator {
     }
 
     public void migrate() {
-        Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).to(initiators).send();
+        Logger logger = (input, placeholders) -> MessageUtil.Builder().mmText(input, placeholders).to(initiators)
+                .send();
         if (config.isSet("version") && config.getInt("version") >= Config.VERSION) {
             return;
         }
@@ -74,8 +75,11 @@ public class ConfigMigrator {
     /**
      * Migrates a setting from the specified old path in the config
      * to the new path.
-     * @param oldPath the old path
-     * @param newPath the new path
+     *
+     * @param oldPath
+     *            the old path
+     * @param newPath
+     *            the new path
      */
     private void migrate(String oldPath, String newPath) {
         config.set(newPath, config.get(oldPath));
@@ -85,8 +89,11 @@ public class ConfigMigrator {
     /**
      * Migrates a setting from the specified old path in the config
      * to the new path in the localization config.
-     * @param oldPath the old path
-     * @param newPath the new path
+     *
+     * @param oldPath
+     *            the old path
+     * @param newPath
+     *            the new path
      */
     private void migrateIntl(String oldPath, String newPath) {
         localizationConfig.set(newPath, config.get(oldPath));
