@@ -1,10 +1,10 @@
 package ratismal.drivebackup.uploaders.onedrive;
 
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import com.azure.identity.DeviceCodeCredential;
+import com.azure.identity.DeviceCodeCredentialBuilder;
+import com.microsoft.graph.models.File;
+import com.microsoft.graph.serviceclient.GraphServiceClient;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -16,6 +16,7 @@ import ratismal.drivebackup.uploaders.Authenticator;
 import ratismal.drivebackup.uploaders.Authenticator.AuthenticationProvider;
 import ratismal.drivebackup.uploaders.Obfusticate;
 import ratismal.drivebackup.uploaders.Uploader;
+import ratismal.drivebackup.util.Logger;
 import ratismal.drivebackup.util.MessageUtil;
 import ratismal.drivebackup.util.NetUtil;
 
@@ -105,31 +106,145 @@ public class OneDriveUploader extends Uploader {
         return !accessToken.isEmpty();
     }
 
+    private static void logResponse(Logger logger, Response response) throws IOException {
+        StringBuilder str = new StringBuilder();
+        {
+            Request request = response.request();
+            str.append("Request {");
+            str.append("\n\tmethod = ");
+            str.append(request.method());
+            str.append(",\n\turl = ");
+            str.append(request.url());
+            Headers headers = request.headers();
+            if (headers.size() != 0) {
+                str.append(",\n\theaders = [");
+                headers.forEach(header -> {
+                    str.append("\n\t\t");
+                    str.append(header.getFirst());
+                    str.append(" : ");
+                    str.append(header.getSecond());
+                });
+                str.append("\n\t]");
+            }
+            str.append(",\n\tbody = ");
+            str.append(request.body());
+            str.append("\n}");
+        }
+        str.append('\n');
+        {
+            str.append("Response {");
+            str.append("\n\tprotocol = ");
+            str.append(response.protocol());
+            str.append(",\n\tcode = ");
+            str.append(response.code());
+            str.append(",\n\tmessage = ");
+            str.append(response.message());
+            Headers headers = response.headers();
+            if (headers.size() != 0) {
+                str.append(",\n\theaders = [");
+                headers.forEach(header -> {
+                    str.append("\n\t\t");
+                    str.append(header.getFirst());
+                    str.append(" : ");
+                    str.append(header.getSecond());
+                });
+                str.append("\n\t]");
+            }
+            str.append(",\n\tbody = ");
+            str.append(response.body().string());
+            str.append("\n}");
+        }
+        logger.log(str.toString());
+    }
+
+    private class ResolvedRemoteDirectory {
+        public final String driveId;
+        public final String parentId;
+        @Nullable
+        public final String subPath;
+
+        public ResolvedRemoteDirectory(String driveId, String parentId, String subPath) {
+            this.driveId = driveId;
+            this.parentId = parentId;
+            this.subPath = subPath;
+        }
+    }
+
+    private ResolvedRemoteDirectory resolveRemoteDirectory(String path) throws IOException {
+        String[] parts = path.split("/", 2);
+        String root = parts[0];
+        String remainder = null;
+        if(parts.length >= 2) {
+            remainder = parts[1];
+        }
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + accessToken)
+                .url("https://graph.microsoft.com/v1.0/me/drive/root:/" + root + "?$select=id,parentReference,remoteItem")
+                .build();
+	JSONObject itemObject;
+	try (Response response = DriveBackup.httpClient.newCall(request).execute()) {
+	    itemObject = new JSONObject(response.body().string());
+	}
+        if(itemObject.has("remoteItem")) {
+            itemObject = itemObject.getJSONObject("remoteItem");
+        }
+	String parentId = itemObject.getString("id");
+        String driveId = itemObject.getJSONObject("parentReference").getString("driveId");
+        return new ResolvedRemoteDirectory(driveId, parentId, remainder);
+    }
+
     /**
      * Tests the OneDrive account by uploading a small file
      *  @param testFile the file to upload during the test
      */
     public void test(java.io.File testFile) {
         try {
-            String destination = ConfigParser.getConfig().backupStorage.remoteDirectory;
+            {
+                final String clientId = "YOUR_CLIENT_ID";
+                final String tenantId = "YOUR_TENANT_ID"; // or "common" for multi-tenant apps
+                final String[] scopes = new String[] {"Files.ReadWrite"};
+
+                final DeviceCodeCredential credential = new DeviceCodeCredentialBuilder()
+                        .clientId(clientId).tenantId(tenantId).challengeConsumer(challenge -> {
+                            // Display challenge to the user
+                            System.out.println(challenge.getMessage());
+                        }).build();
+
+                if (null == scopes || null == credential) {
+                    throw new Exception("Unexpected error");
+                }
+
+                final GraphServiceClient graphClient = new GraphServiceClient(credential, scopes);
+
+                com.microsoft.graph.models.File file;
+                graphClient.me().drive().get().getItems().get(0);
+            }
+            ResolvedRemoteDirectory destination = resolveRemoteDirectory(ConfigParser.getConfig().backupStorage.remoteDirectory);
             Request request = new Request.Builder()
                 .addHeader("Authorization", "Bearer " + accessToken)
-                .url("https://graph.microsoft.com/v1.0/me/drive/root:/" + destination + "/" + testFile.getName() + ":/content")
+//                .url("https://graph.microsoft.com/v1.0/me/drive/root:/" + destination + "/" + testFile.getName() + ":/content")
+//                .url(String.format("https://graph.microsoft.com/v1.0/drives/%S/items/%S:/%S:/content",
+//                        destination.driveId, destination.parentId, testFile.getName()))
+                .url("https://graph.microsoft.com/v1.0/drives/" + destination.driveId + "/items/" + destination.parentId + ":/" + testFile.getName() + ":/content")
                 .put(RequestBody.create(testFile, MediaType.parse("plain/txt")))
                 .build();
             Response response = DriveBackup.httpClient.newCall(request).execute();
+            logResponse(logger, response);
             int statusCode = response.code();
             response.close();
             if (statusCode != 201) {
                 setErrorOccurred(true);
+                return;
             }
             TimeUnit.SECONDS.sleep(5);
             request = new Request.Builder()
                 .addHeader("Authorization", "Bearer " + accessToken)
-                .url("https://graph.microsoft.com/v1.0/me/drive/root:/" + destination + "/" + testFile.getName() + ":/")
+//                .url("https://graph.microsoft.com/v1.0/me/drive/root:/" + destination + "/" + testFile.getName() + ":/")
+                .url("https://graph.microsoft.com/v1.0/drives/" + destination.driveId + "/items/" + destination.parentId + ":/" + testFile.getName() + ":/")
                 .delete()
                 .build();
             response = DriveBackup.httpClient.newCall(request).execute();
+            logResponse(logger, response);
             statusCode = response.code();
             response.close();
             if (statusCode != 204) {
@@ -147,6 +262,7 @@ public class OneDriveUploader extends Uploader {
      * @param file the file
      * @param type the type of file (ex. plugins, world)
      */
+    @SuppressWarnings("t")
     public void uploadFile(java.io.File file, String type) throws IOException {
         try {
             resetRanges();
