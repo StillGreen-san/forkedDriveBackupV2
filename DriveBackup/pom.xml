@@ -41,7 +41,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
+                    <minimizeJar>false</minimizeJar>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
                     <relocations>
                         <relocation>
@@ -116,6 +116,36 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.6.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>proguard</goal></goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <options>
+                        <option>-dontnote</option>
+                        <option>-dontwarn</option>
+                        <option>-keepattributes SourceFile, LineNumberTable</option>
+                        <option>-keep public class ratismal.drivebackup.plugin.DriveBackup { *; }</option>
+                        <option>-keep public class ratismal.drivebackup.handler.listeners.ChatInputListener { *; }</option>
+                        <option>-keep public class ratismal.drivebackup.handler.listeners.PlayerListener { *; }</option>
+                        <option>-keep public class ratismal.drivebackup.handler.commandHandler.CommandHandler { *; }</option>
+                        <option>-keep class ratismal.drivebackup.DriveBackup.lib.adventure.text.format.*{*;}</option>
+                    </options>
+                    <obfuscate>false</obfuscate>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}-small.jar</outjar>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jce.jar</lib>
+                    </libs>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
