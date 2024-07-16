@@ -179,6 +179,7 @@ public class UploadThread implements Runnable {
             }
         };
         fileUtil = new FileUtil(logger);
+        totalTimer = new Timer();
     }
 
     /**
@@ -299,8 +300,8 @@ public class UploadThread implements Runnable {
         totalTimer.end();
         long totalBackupTime = totalTimer.getTime();
         long totalSeconds = Duration.of(totalBackupTime, ChronoUnit.MILLIS).getSeconds();
-        logger.log(intl("backup-total-time"), "<time>", String.valueOf(totalSeconds));
         backupStatus = BackupStatus.NOT_RUNNING;
+        logger.log(intl("backup-total-time"), "time", String.valueOf(totalSeconds));
         if (errorOccurred) {
             DriveBackupApi.backupError();
         } else {
