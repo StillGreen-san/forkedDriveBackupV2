@@ -22,22 +22,22 @@ public class HttpLogger implements Interceptor {
         if (!ConfigParser.getConfig().advanced.debugEnabled) {
             return chain.proceed(request);
         }
-        long t1 = System.nanoTime();
-        MessageUtil.Builder().text(String.format("Sending request %s", request.url())).toConsole(true).send();
-        Response response = chain.proceed(request);
-        long t2 = System.nanoTime();
-        MessageUtil.Builder().text(String.format("Received response for %s in %.1fms", response.request().url(), (t2 - t1) / 1e6d)).toConsole(true).send();
+        Response response = handleSendReceive(chain, request);
         try {
-            if (request.body().contentType().equals(jsonMediaType)) {
-                Buffer requestBody = new Buffer();
-                request.body().writeTo(requestBody);
-                MessageUtil.Builder().text("Req: " + requestBody.readUtf8()).toConsole(true).send();
-            } else {
-                MessageUtil.Builder().text("Req: Not JSON").toConsole(true).send();
-            }
-        } catch (Exception exception) {
-            MessageUtil.Builder().text("Req: None").toConsole(true).send();
+            handleRequest(response.request());
+            return handleResponse(response);
+        } catch (Throwable throwable) {
+            response.close();
+            throw throwable;
         }
+    }
+
+    /**
+     * logs the response body
+     * @return a new equivalent response
+     * @throws IOException if the response body could not be read as string
+     */
+    private static @NotNull Response handleResponse(@NotNull Response response) throws IOException {
         ResponseBody responseBody = response.body();
         String responseBodyString = responseBody.string();
         MediaType responseBodyContentType = responseBody.contentType();
@@ -56,5 +56,36 @@ public class HttpLogger implements Interceptor {
             MessageUtil.Builder().text("Resp: " + responseBodyString).toConsole(true).send();
         }
         return response.newBuilder().body(ResponseBody.create(responseBodyString, responseBodyContentType)).build();
+    }
+
+    /**
+     * logs the request body, if present
+     */
+    private static void handleRequest(@NotNull Request request) {
+        try {
+            if (request.body().contentType().equals(jsonMediaType)) {
+                Buffer requestBody = new Buffer();
+                request.body().writeTo(requestBody);
+                MessageUtil.Builder().text("Req: " + requestBody.readUtf8()).toConsole(true).send();
+            } else {
+                MessageUtil.Builder().text("Req: Not JSON").toConsole(true).send();
+            }
+        } catch (Exception exception) {
+            MessageUtil.Builder().text("Req: None").toConsole(true).send();
+        }
+    }
+
+    /**
+     * proceeds with the request, logging request url and response time
+     * @return the response
+     * @throws IOException when an error occurs in the Interceptor.Chain
+     */
+    private static @NotNull Response handleSendReceive(@NotNull Interceptor.Chain chain, @NotNull Request request) throws IOException {
+        long startTime = System.nanoTime();
+        MessageUtil.Builder().text(String.format("Sending request %s", request.url())).toConsole(true).send();
+        Response response = chain.proceed(request);
+        long endTime = System.nanoTime();
+        MessageUtil.Builder().text(String.format("Received response for %s in %.1fms", response.request().url(), (endTime - startTime) / 1e6d)).toConsole(true).send();
+        return response;
     }
 }
