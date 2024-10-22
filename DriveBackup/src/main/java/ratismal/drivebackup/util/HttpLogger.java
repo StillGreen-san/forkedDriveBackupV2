@@ -3,14 +3,17 @@ package ratismal.drivebackup.util;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
+
 import ratismal.drivebackup.config.ConfigParser;
 
 public class HttpLogger implements Interceptor {
@@ -38,40 +41,49 @@ public class HttpLogger implements Interceptor {
      * @throws IOException if the response body could not be read as string
      */
     private static @NotNull Response handleResponse(@NotNull Response response) throws IOException {
-        ResponseBody responseBody = response.body();
-        String responseBodyString = responseBody.string();
-        MediaType responseBodyContentType = responseBody.contentType();
-        responseBody.close();
-        if (responseBodyContentType.equals(jsonMediaType)) {
+        String bodyString;
+        MediaType bodyContentType;
+        try (ResponseBody responseBody = response.body()) {
+            if (responseBody == null) {
+                sendToConsole("Resp: No Body");
+                return response.newBuilder().build();
+            }
+            bodyContentType = responseBody.contentType();
+            bodyString = responseBody.string();
+        }
+        if (jsonMediaType.equals(bodyContentType)) {
             try {
-                JSONObject responseBodyJson = new JSONObject(responseBodyString);
-                if (responseBodyJson.getString("msg").equals("code_not_authenticated")) {
-                    return response.newBuilder().body(ResponseBody.create(responseBodyString, responseBodyContentType)).build();
+                JSONObject bodyJson = new JSONObject(bodyString);
+                if ("code_not_authenticated".equals(bodyJson.optString("msg"))) {
+                    return response.newBuilder().body(ResponseBody.create(bodyString, bodyContentType)).build();
                 }
-                sendToConsole("Resp: " + responseBodyJson);
-            } catch (Exception exception) {
-                sendToConsole("Resp: " + responseBodyString);
+                sendToConsole("Resp: " + bodyJson);
+            } catch (JSONException exception) { // bodyJson construction failed
+                sendToConsole("Resp: " + bodyString);
             }
         } else {
-            sendToConsole("Resp: " + responseBodyString);
+            sendToConsole("Resp: " + bodyString);
         }
-        return response.newBuilder().body(ResponseBody.create(responseBodyString, responseBodyContentType)).build();
+        return response.newBuilder().body(ResponseBody.create(bodyString, bodyContentType)).build();
     }
 
     /**
-     * logs the request body, if present
+     * logs the request body
      */
     private static void handleRequest(@NotNull Request request) {
         try {
-            if (request.body().contentType().equals(jsonMediaType)) {
-                Buffer requestBody = new Buffer();
-                request.body().writeTo(requestBody);
-                sendToConsole("Req: " + requestBody.readUtf8());
+            RequestBody requestBody = request.body();
+            if (requestBody == null) {
+                sendToConsole("Req: No Body");
+            } else if (jsonMediaType.equals(requestBody.contentType())) {
+                Buffer bodyBuffer = new Buffer();
+                requestBody.writeTo(bodyBuffer);
+                sendToConsole("Req: " + bodyBuffer.readUtf8());
             } else {
-                sendToConsole("Req: Not JSON");
+                sendToConsole("Req: unsupported content type " + requestBody.contentType());
             }
         } catch (Exception exception) {
-            sendToConsole("Req: None");
+            sendToConsole("Req: Error reading request body");
         }
     }
 
