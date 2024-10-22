@@ -48,12 +48,12 @@ public class HttpLogger implements Interceptor {
                 if (responseBodyJson.getString("msg").equals("code_not_authenticated")) {
                     return response.newBuilder().body(ResponseBody.create(responseBodyString, responseBodyContentType)).build();
                 }
-                MessageUtil.Builder().text("Resp: " + responseBodyJson).toConsole(true).send();
+                sendToConsole("Resp: " + responseBodyJson);
             } catch (Exception exception) {
-                MessageUtil.Builder().text("Resp: " + responseBodyString).toConsole(true).send();
+                sendToConsole("Resp: " + responseBodyString);
             }
         } else {
-            MessageUtil.Builder().text("Resp: " + responseBodyString).toConsole(true).send();
+            sendToConsole("Resp: " + responseBodyString);
         }
         return response.newBuilder().body(ResponseBody.create(responseBodyString, responseBodyContentType)).build();
     }
@@ -66,12 +66,12 @@ public class HttpLogger implements Interceptor {
             if (request.body().contentType().equals(jsonMediaType)) {
                 Buffer requestBody = new Buffer();
                 request.body().writeTo(requestBody);
-                MessageUtil.Builder().text("Req: " + requestBody.readUtf8()).toConsole(true).send();
+                sendToConsole("Req: " + requestBody.readUtf8());
             } else {
-                MessageUtil.Builder().text("Req: Not JSON").toConsole(true).send();
+                sendToConsole("Req: Not JSON");
             }
         } catch (Exception exception) {
-            MessageUtil.Builder().text("Req: None").toConsole(true).send();
+            sendToConsole("Req: None");
         }
     }
 
@@ -82,10 +82,14 @@ public class HttpLogger implements Interceptor {
      */
     private static @NotNull Response handleSendReceive(@NotNull Interceptor.Chain chain, @NotNull Request request) throws IOException {
         long startTime = System.nanoTime();
-        MessageUtil.Builder().text(String.format("Sending request %s", request.url())).toConsole(true).send();
+        sendToConsole("Sending request " + request.url());
         Response response = chain.proceed(request);
         long endTime = System.nanoTime();
-        MessageUtil.Builder().text(String.format("Received response for %s in %.1fms", response.request().url(), (endTime - startTime) / 1e6d)).toConsole(true).send();
+        sendToConsole(String.format("Received response for %s in %.1fms", response.request().url(), (endTime - startTime) / 1e6d));
         return response;
+    }
+    
+    private static void sendToConsole(@NotNull String message) {
+        MessageUtil.Builder().text(message).toConsole(true).send();
     }
 }
