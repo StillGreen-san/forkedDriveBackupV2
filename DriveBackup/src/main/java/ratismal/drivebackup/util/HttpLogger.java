@@ -1,6 +1,8 @@
 package ratismal.drivebackup.util;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -13,6 +15,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
+import okio.ByteString;
 
 import ratismal.drivebackup.config.ConfigParser;
 
@@ -38,10 +41,10 @@ public class HttpLogger implements Interceptor {
     /**
      * logs the response body
      * @return a new equivalent response
-     * @throws IOException if the response body could not be read as string
+     * @throws IOException if the response body could not be loaded into memory
      */
     private static @NotNull Response handleResponse(@NotNull Response response) throws IOException {
-        String bodyString;
+        ByteString bodyBytes;
         MediaType bodyContentType;
         try (ResponseBody responseBody = response.body()) {
             if (responseBody == null) {
@@ -49,9 +52,18 @@ public class HttpLogger implements Interceptor {
                 return response.newBuilder().build();
             }
             bodyContentType = responseBody.contentType();
-            bodyString = responseBody.string();
+            bodyBytes = responseBody.byteString();
+            responseBody.source();
+            ResponseBody.create(bodyBytes, bodyContentType).string();
         }
         if (jsonMediaType.equals(bodyContentType)) {
+            String bodyString;
+            try {
+                bodyString = bodyBytes.string(getCharset(bodyContentType));
+            } catch (Exception e) {
+                sendToConsole("Resp: Error reading response body as string");
+                return response.newBuilder().body(ResponseBody.create(bodyBytes, bodyContentType)).build();
+            }
             try {
                 JSONObject bodyJson = new JSONObject(bodyString);
                 if ("code_not_authenticated".equals(bodyJson.optString("msg"))) {
@@ -62,9 +74,9 @@ public class HttpLogger implements Interceptor {
                 sendToConsole("Resp: " + bodyString);
             }
         } else {
-            sendToConsole("Resp: " + bodyString);
+            sendToConsole("Resp: " + bodyBytes);
         }
-        return response.newBuilder().body(ResponseBody.create(bodyString, bodyContentType)).build();
+        return response.newBuilder().body(ResponseBody.create(bodyBytes, bodyContentType)).build();
     }
 
     /**
@@ -75,15 +87,18 @@ public class HttpLogger implements Interceptor {
             RequestBody requestBody = request.body();
             if (requestBody == null) {
                 sendToConsole("Req: No Body");
-            } else if (jsonMediaType.equals(requestBody.contentType())) {
-                Buffer bodyBuffer = new Buffer();
-                requestBody.writeTo(bodyBuffer);
-                sendToConsole("Req: " + bodyBuffer.readUtf8());
-            } else {
-                sendToConsole("Req: unsupported content type " + requestBody.contentType());
+                return;
             }
+            MediaType bodyContentType = requestBody.contentType();
+            Charset charset = bodyContentType != null ? bodyContentType.charset(null) : null;
+            if (charset == null) {
+                sendToConsole("Req: ");
+            }
+            Buffer bodyBuffer = new Buffer();
+            requestBody.writeTo(bodyBuffer);
+            sendToConsole("Req: " + bodyBuffer.readString(getCharset(requestBody.contentType())));
         } catch (Exception exception) {
-            sendToConsole("Req: Error reading request body");
+            sendToConsole("Req: Error reading request body as string");
         }
     }
 
@@ -103,5 +118,13 @@ public class HttpLogger implements Interceptor {
     
     private static void sendToConsole(@NotNull String message) {
         MessageUtil.Builder().text(message).toConsole(true).send();
+    }
+
+    /**
+     * @return the charset for the body content type or UTF8
+     */
+    private static @NotNull Charset getCharset(MediaType bodyContentType) {
+        Charset charset = bodyContentType != null ? bodyContentType.charset(null) : null;
+        return charset != null ? charset : StandardCharsets.UTF_8;
     }
 }
