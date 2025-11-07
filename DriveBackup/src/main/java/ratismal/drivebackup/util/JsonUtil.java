@@ -22,6 +22,8 @@ public class JsonUtil {
         throws JSONException {
         return json.getJSONObject(findKeyIgnoreCase(json, key, key));
     }
+    
+    // TODO mention key preference and non determinism in docs
 
     /**
      * tries to get the {@link JSONObject} associated with a key, ignoring case differences
@@ -139,5 +141,9 @@ public class JsonUtil {
             }
         }
         return null;
+    }
+
+    public static boolean removeAllIgnoreCase(@NotNull JSONObject json, @NotNull String key) {
+        return json.keySet().removeIf(member -> member.equalsIgnoreCase(key));
     }
 }

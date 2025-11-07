@@ -46,11 +46,38 @@ public class GraphApiError {
             if (detail instanceof JSONObject) {
                 this.details.add(new GraphApiError((JSONObject) detail));
             } else {
-                this.details.add(new GraphApiError("invalid 'details' entry", "'details' entries must be a JSONObject"));
+                this.details.add(
+                    new GraphApiError("invalid 'details' entry", "'details' entries must be a JSONObject"));
             }
         }
         JSONObject maybeInnerError = optJsonObjectIgnoreCase(error, INNERERROR_OBJ_KEY);
         this.innerError = maybeInnerError != null ? new GraphApiInnerError(maybeInnerError) : null;
+    }
+
+    public String header(int statusCode) {
+        return String.format("%d %s : \"%s\"", statusCode, this.code, this.message);
+    }
+
+    public void content(StringBuilder sb, StringBuilder prefix) {
+        sb.append(prefix).append('{');
+        prefix.append('\t');
+        sb.append(prefix).append("code: ").append(code);
+        sb.append(prefix).append("message: ").append(message);
+        if (target != null) {
+            sb.append(prefix).append("target: ").append(target);
+        }
+        if (!details.isEmpty()) {
+            sb.append(prefix).append("details: [");
+            details.forEach(detail -> {
+                detail.content(sb, prefix);
+            });
+            sb.append(prefix).append(']');
+        }
+        if (innerError != null) {
+            innerError.content(sb, prefix);
+        }
+        prefix.deleteCharAt(prefix.length() - 1);
+        sb.append(prefix).append('}');
     }
 
     private GraphApiError(@NotNull String code, @NotNull String message) {

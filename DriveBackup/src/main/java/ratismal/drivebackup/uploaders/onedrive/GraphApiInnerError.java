@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import static ratismal.drivebackup.util.JsonUtil.optStringIgnoreCase;
 import static ratismal.drivebackup.util.JsonUtil.optJsonObjectIgnoreCase;
+import static ratismal.drivebackup.util.JsonUtil.removeAllIgnoreCase;
 
 /** microsoft graph api innererror; containing more specific service-defined error information */
 public class GraphApiInnerError {
@@ -28,8 +29,23 @@ public class GraphApiInnerError {
         this.code = optStringIgnoreCase(innerError, CODE_STR_KEY);
         JSONObject maybeInnerError = optJsonObjectIgnoreCase(innerError, INNERERROR_OBJ_KEY);
         this.innerError = maybeInnerError != null ? new GraphApiInnerError(maybeInnerError) : null;
-        innerError.remove(CODE_STR_KEY);
-        innerError.remove(INNERERROR_OBJ_KEY);
+        removeAllIgnoreCase(innerError, CODE_STR_KEY);
+        removeAllIgnoreCase(innerError, INNERERROR_OBJ_KEY);
         this.contents = innerError;
+    }
+
+    public void content(StringBuilder sb, StringBuilder prefix) {
+        sb.append(prefix).append("innerError: ");
+        sb.append(prefix).append('{');
+        prefix.append('\t');
+        sb.append(prefix).append("code: ").append(code);
+        contents.keySet().forEach(key -> {
+            sb.append(prefix).append(key).append(": ").append(contents.optString(key));
+        });
+        if (innerError != null) {
+            innerError.content(sb, prefix);
+        }
+        prefix.deleteCharAt(prefix.length() - 1);
+        sb.append(prefix).append('}');
     }
 }

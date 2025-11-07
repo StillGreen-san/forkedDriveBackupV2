@@ -2,6 +2,7 @@ package ratismal.drivebackup.uploaders.onedrive;
 
 import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -38,9 +39,27 @@ public class GraphApiErrorException extends Exception {
         this(statusCode, new GraphApiErrorResponse(responseBody).error);
     }
 
+    public Exception verbose() {
+        return new VerboseException();
+    }
+
     private GraphApiErrorException(int statusCode, @NotNull GraphApiError error) {
-        super(String.format("%d %s : \"%s\"", statusCode, error.code, error.message));
+        super(error.header(statusCode));
         this.statusCode = statusCode;
         this.error = error;
+    }
+
+    private class VerboseException extends Exception {
+        private @Nullable String message;
+
+        @Override
+        public String getMessage() {
+            if (message == null) {
+                StringBuilder sb = new StringBuilder(error.header(statusCode));
+                error.content(sb, new StringBuilder("\n"));
+                message = sb.toString();
+            }
+            return message;
+        }
     }
 }
